@@ -19,7 +19,7 @@ import (
 //go:embed data/resources.yaml
 var apiResourcesData []byte
 var apiResources []APIResource
-var apiResourceMap map[string]APIResource = make(map[string]APIResource, 0)
+var apiResourcesMap map[string]APIResource = make(map[string]APIResource, 0)
 
 type (
 	kvmap map[string]string
@@ -49,18 +49,16 @@ type (
 )
 
 func (r APIResource) Key() string {
-	return fmt.Sprintf("%s/%s", r.APIGroup, r.Kind)
+	return fmt.Sprintf("%s/%s/%s", r.APIGroup, r.APIVersion, r.Kind)
 }
 
 func (r Resource) Group() (group string) {
 	parts := strings.Split(r.APIVersion, "/")
 	if len(parts) > 1 {
-		group = parts[0]
+		return r.APIVersion
 	} else {
-		group = "core"
+		return fmt.Sprintf("core/%s", r.APIVersion)
 	}
-
-	return group
 }
 
 func (r Resource) Key() string {
@@ -68,7 +66,7 @@ func (r Resource) Key() string {
 }
 
 func (r Resource) Path() string {
-	spec, exists := apiResourceMap[r.Key()]
+	spec, exists := apiResourcesMap[r.Key()]
 	if !exists {
 		log.Fatalf("%s: unknown resource", r.Key())
 	}
@@ -99,7 +97,7 @@ func readApiResources() {
 	log.Printf("read %d api resources", len(apiResources))
 
 	for _, r := range apiResources {
-		apiResourceMap[r.Key()] = r
+		apiResourcesMap[r.Key()] = r
 	}
 }
 
