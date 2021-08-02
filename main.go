@@ -84,7 +84,7 @@ func (r Resource) Path() string {
 func readApiResources() {
 	err := yaml.Unmarshal(apiResourcesData, &apiResources)
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed to read api resources: %v", err)
 	}
 	log.Printf("read %d api resources", len(apiResources))
 
@@ -106,13 +106,13 @@ func Split() {
 			break
 		}
 		if err != nil {
-			panic(err)
+			log.Fatalf("failed to decode yaml: %v", err)
 		}
 
 		var res Resource
 		err = node.Decode(&res)
 		if err != nil {
-			panic(err)
+			log.Fatalf("failed to decode resource: %v", err)
 		}
 
 		path := res.Path()
