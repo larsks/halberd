@@ -82,6 +82,16 @@ func (r Resource) Path() string {
 }
 
 func readApiResources() {
+	if apiResourcesPath != "" {
+		data, err := ioutil.ReadFile(apiResourcesPath)
+		if err != nil {
+			log.Fatalf("failed to open %s: %v",
+				apiResourcesPath, err)
+		}
+
+		apiResourcesData = data
+	}
+
 	err := yaml.Unmarshal(apiResourcesData, &apiResources)
 	if err != nil {
 		log.Fatalf("failed to read api resources: %v", err)
@@ -93,10 +103,7 @@ func readApiResources() {
 	}
 }
 
-func Split() {
-	readApiResources()
-
-	reader := io.Reader(os.Stdin)
+func Split(reader io.Reader) {
 	dec := yaml.NewDecoder(reader)
 
 	for {
@@ -121,34 +128,55 @@ func Split() {
 
 		content, err := yaml.Marshal(&node)
 		if err != nil {
-			panic(err)
+			log.Fatalf("failed to marshal yaml: %v", err)
 		}
 
 		err = ioutil.WriteFile(path, content, 0644)
 		if err != nil {
-			panic(err)
+			log.Fatalf("failed to write file: %v", err)
 		}
 	}
 }
 
-var apiResourcePath string
+var apiResourcesPath string
 var targetDir string
 
 var rootCmd = &cobra.Command{
 	Use:   "halberd",
-	Args:  cobra.MaximumNArgs(1),
+	Args:  cobra.ArbitraryArgs,
 	Short: "A tool for breaking Helms",
 	Long: `A tool for breaking Helms
 
 Halberd splits a YAML document containing multiple Kubernetes resources
 into individual files, organized following Operate First standards.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var readers []io.Reader
+
+		if len(args) > 0 {
+			for _, path := range args {
+				f, err := os.Open(path)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				defer f.Close()
+				readers = append(readers, io.Reader(f))
+			}
+		} else {
+			log.Println("Reading from stdin")
+			readers = append(readers, io.Reader(os.Stdin))
+		}
+
+		readApiResources()
+
 		err := os.Chdir(targetDir)
 		if err != nil {
 			return fmt.Errorf("unable to access %s: %w", targetDir, err)
 		}
 
-		Split()
+		for _, reader := range readers {
+			Split(reader)
+		}
 
 		return nil
 	},
@@ -156,7 +184,7 @@ into individual files, organized following Operate First standards.`,
 
 func main() {
 	rootCmd.Flags().StringVarP(
-		&apiResourcePath, "api-resources", "r", "", "api resources information")
+		&apiResourcesPath, "api-resources", "r", "", "api resources information")
 	rootCmd.Flags().StringVarP(
 		&targetDir, "directory", "d", ".", "target directory")
 	cobra.CheckErr(rootCmd.Execute())
