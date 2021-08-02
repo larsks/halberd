@@ -68,7 +68,10 @@ func (r Resource) Key() string {
 }
 
 func (r Resource) Path() string {
-	spec := apiResourceMap[r.Key()]
+	spec, exists := apiResourceMap[r.Key()]
+	if !exists {
+		log.Fatalf("%s: unknown resource", r.Key())
+	}
 	return fmt.Sprintf(
 		"%s/%s/%s/%s.yaml",
 		spec.APIGroup,
