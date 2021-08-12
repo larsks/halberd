@@ -119,6 +119,10 @@ func Split(reader io.Reader) {
 		if err != nil {
 			log.Fatalf("failed to decode resource: %v", err)
 		}
+		if res.APIVersion == "" {
+			log.Printf("skipping invalid resource")
+			continue
+		}
 
 		path := res.Path()
 		log.Printf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
