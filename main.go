@@ -19,7 +19,7 @@ import (
 //go:embed data/resources.yaml
 var apiResourcesData []byte
 var apiResources []APIResource
-var apiResourcesMap map[string]APIResource = make(map[string]APIResource, 0)
+var apiResourcesMap map[string]APIResource = make(map[string]APIResource)
 
 type (
 	kvmap map[string]string
@@ -126,7 +126,9 @@ func Split(reader io.Reader) {
 
 		path := res.Path()
 		log.Printf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
-		os.MkdirAll(filepath.Dir(path), 0755)
+		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+			log.Fatalf("failed to create directory %s: %v", path, err)
+		}
 
 		content, err := yaml.Marshal(&node)
 		if err != nil {
