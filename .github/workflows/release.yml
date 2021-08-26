@@ -1,0 +1,100 @@
+on:
+  push:
+    paths:
+      - "changelog/config.env"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Setup go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16'
+
+      - name: Download go modules
+        run: go mod tidy
+
+      - name: Run linters
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.42
+          skip-go-installation: true
+
+  build:
+    name: Build binary
+    runs-on: ubuntu-latest
+    needs: test
+
+    strategy:
+      matrix:
+        goos:
+          - linux
+          - darwin
+        goarch:
+          - amd64
+          - arm64
+          - arm
+        include:
+          - goos: linux
+            goarch: arm
+            goarm: 7
+        exclude:
+          - goos: darwin
+            goarch: arm
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16
+      - name: Build binaries
+        run: make
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          GOARM: ${{ matrix.goarm }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: "oaitool-${{ matrix.goos }}-${{ matrix.goarch }}"
+          path: "build/oaitool-${{ matrix.goos }}-${{ matrix.goarch }}"
+
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get release version
+        id: release_version
+        run: |
+          . changelog/config.env
+
+          RELEASE_DESCRIPTION=changelog/release-$RELEASE_VERSION.md
+          if ! [ -f "$RELEASE_DESCRIPTION" ]; then
+            echo "ERROR: missing $RELEASE_DESCRIPTION" >&2
+            exit 1
+          fi
+
+          echo "::set-output name=release_version::$RELEASE_VERSION"
+          echo "::set-output name=release_description::$RELEASE_DESCRIPTION"
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.release_version.outputs.release_version }}
+          bodyFile: ${{ steps.release_version.outputs.release_description }}
+          commit: ${{ github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: artifacts/*/*

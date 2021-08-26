@@ -1,0 +1,19 @@
+linters:
+  enable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
+    - revive
+
+linters-settings:
+  revive:
+    rules:
+      - name: var-naming
+        disabled: true
