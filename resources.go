@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
+
+	"github.com/rs/zerolog/log"
+
 	"os"
 	"path/filepath"
 	"strings"
@@ -99,14 +101,14 @@ func writeResources(resourceList ResourceList) error {
 			return err
 		}
 
-		log.Printf("creating directory %s", apiResourcesDir)
+		log.Info().Msgf("creating directory %s", apiResourcesDir)
 		err := os.Mkdir(apiResourcesDir, 0o700)
 		if err != nil {
 			return err
 		}
 	}
 
-	log.Printf("writing resources to %s", apiResourcesPath)
+	log.Info().Msgf("writing resources to %s", apiResourcesPath)
 	if err := ioutil.WriteFile(apiResourcesPath, resourceJson, 0o644); err != nil {
 		return err
 	}

@@ -31,6 +31,7 @@ var (
 	apiResourcesPath       string
 	kubeconfig             string
 	targetDir              string
+	verbosity              int
 )
 
 type (
@@ -149,6 +150,19 @@ func Split(reader io.Reader) {
 	}
 }
 
+func setLogLevel() {
+	var logLevel zerolog.Level
+	switch verbosity {
+	case 0:
+		logLevel = zerolog.WarnLevel
+	case 1:
+		logLevel = zerolog.InfoLevel
+	default:
+		logLevel = zerolog.DebugLevel
+	}
+	zerolog.SetGlobalLevel(logLevel)
+}
+
 func NewCmdRoot() *cobra.Command {
 	rootCmd := cobra.Command{
 		Use:   "halberd",
@@ -160,6 +174,9 @@ Halberd splits a YAML document containing multiple Kubernetes resources
 into individual files, organized following Operate First standards.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var readers []io.Reader
+
+			setLogLevel()
+			log.Info().Msgf("Halberd build %s", version.BuildRef)
 
 			if updateResourcesAndExit {
 				updateResources = true
@@ -188,7 +205,7 @@ into individual files, organized following Operate First standards.`,
 					readers = append(readers, io.Reader(f))
 				}
 			} else {
-				log.Print("Reading from stdin")
+				log.Info().Msgf("Reading from stdin")
 				readers = append(readers, io.Reader(os.Stdin))
 			}
 
@@ -224,12 +241,13 @@ into individual files, organized following Operate First standards.`,
 		&updateResources, "update", false, "Update resource cache")
 	rootCmd.Flags().BoolVar(
 		&updateResourcesAndExit, "update-only", false, "Update resource cache and exit")
+	rootCmd.Flags().CountVarP(
+		&verbosity, "verbose", "v", "Increase log verbosity")
 
 	return &rootCmd
 }
 
 func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-	log.Printf("Halberd build %s", version.BuildRef)
 	cobra.CheckErr(NewCmdRoot().Execute())
 }
