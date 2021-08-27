@@ -15,12 +15,21 @@ import (
 	"github.com/larsks/halberd/version"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
+
+	"k8s.io/client-go/util/homedir"
 )
 
-//go:embed data/resources.yaml
-var apiResourcesData []byte
-var apiResources []APIResource
-var apiResourcesMap map[string]APIResource = make(map[string]APIResource)
+var (
+	//go:embed data/resources.yaml
+	apiResourcesData       []byte
+	apiResources           []APIResource
+	apiResourcesMap        map[string]APIResource = make(map[string]APIResource)
+	updateResources        bool
+	updateResourcesAndExit bool
+	apiResourcesPath       string
+	kubeconfig             string
+	targetDir              string
+)
 
 type (
 	kvmap map[string]string
@@ -38,14 +47,6 @@ type (
 		APIVersion string `yaml:"apiVersion"`
 		Kind       string
 		Metadata   Metadata `yaml:",omitempty"`
-	}
-
-	APIResource struct {
-		Name       string
-		Namespaced bool
-		Kind       string
-		APIVersion string `yaml:"apiVersion"`
-		APIGroup   string `yaml:"apiGroup"`
 	}
 )
 
@@ -82,13 +83,16 @@ func (r Resource) Path() string {
 
 func readApiResources() {
 	if apiResourcesPath != "" {
+		log.Printf("reading api resources from %s", apiResourcesPath)
 		data, err := ioutil.ReadFile(apiResourcesPath)
 		if err != nil {
-			log.Fatalf("failed to open %s: %v",
-				apiResourcesPath, err)
+			log.Printf("unable to open resource cache %s; using embedded data",
+				apiResourcesPath)
+		} else {
+			apiResourcesData = data
 		}
-
-		apiResourcesData = data
+	} else {
+		log.Printf("reading resources from embedded data")
 	}
 
 	err := yaml.Unmarshal(apiResourcesData, &apiResources)
@@ -143,56 +147,86 @@ func Split(reader io.Reader) {
 	}
 }
 
-var apiResourcesPath string
-var targetDir string
-
-var rootCmd = &cobra.Command{
-	Use:   "halberd",
-	Args:  cobra.ArbitraryArgs,
-	Short: "A tool for breaking Helms",
-	Long: `A tool for breaking Helms
+func NewCmdRoot() *cobra.Command {
+	rootCmd := cobra.Command{
+		Use:   "halberd",
+		Args:  cobra.ArbitraryArgs,
+		Short: "A tool for breaking Helms",
+		Long: `A tool for breaking Helms
 
 Halberd splits a YAML document containing multiple Kubernetes resources
 into individual files, organized following Operate First standards.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		var readers []io.Reader
+		RunE: func(cmd *cobra.Command, args []string) error {
+			var readers []io.Reader
 
-		if len(args) > 0 {
-			for _, path := range args {
-				f, err := os.Open(path)
-				if err != nil {
-					log.Fatal(err)
+			if updateResourcesAndExit {
+				updateResources = true
+			}
+
+			if updateResources {
+				log.Printf("updating api resource cache")
+				if err := UpdateResources(); err != nil {
+					panic(err)
 				}
 
-				defer f.Close()
-				readers = append(readers, io.Reader(f))
+				if updateResourcesAndExit {
+					return nil
+				}
 			}
-		} else {
-			log.Println("Reading from stdin")
-			readers = append(readers, io.Reader(os.Stdin))
-		}
+			readApiResources()
 
-		readApiResources()
+			if len(args) > 0 {
+				for _, path := range args {
+					f, err := os.Open(path)
+					if err != nil {
+						log.Fatal(err)
+					}
 
-		err := os.Chdir(targetDir)
-		if err != nil {
-			return fmt.Errorf("unable to access %s: %w", targetDir, err)
-		}
+					defer f.Close()
+					readers = append(readers, io.Reader(f))
+				}
+			} else {
+				log.Println("Reading from stdin")
+				readers = append(readers, io.Reader(os.Stdin))
+			}
 
-		for _, reader := range readers {
-			Split(reader)
-		}
+			err := os.Chdir(targetDir)
+			if err != nil {
+				return fmt.Errorf("unable to access %s: %w", targetDir, err)
+			}
 
-		return nil
-	},
+			for _, reader := range readers {
+				Split(reader)
+			}
+
+			return nil
+		},
+	}
+
+	var defaultKubeconfig string
+	var defaultResources string
+
+	if home := homedir.HomeDir(); home != "" {
+		defaultKubeconfig = filepath.Join(home, ".kube", "config")
+		defaultResources = filepath.Join(home, ".config", "halberd", "resources.yaml")
+	}
+
+	rootCmd.Flags().StringVar(
+		&kubeconfig, "kubeconfig", defaultKubeconfig, "absolute path to the kubeconfig file")
+
+	rootCmd.Flags().StringVarP(
+		&apiResourcesPath, "api-resources", "r", defaultResources, "api resources information")
+	rootCmd.Flags().StringVarP(
+		&targetDir, "directory", "d", ".", "target directory")
+	rootCmd.Flags().BoolVar(
+		&updateResources, "update", false, "Update resource cache")
+	rootCmd.Flags().BoolVar(
+		&updateResourcesAndExit, "update-only", false, "Update resource cache and exit")
+
+	return &rootCmd
 }
 
 func main() {
 	log.Printf("Halberd build %s", version.BuildRef)
-
-	rootCmd.Flags().StringVarP(
-		&apiResourcesPath, "api-resources", "r", "", "api resources information")
-	rootCmd.Flags().StringVarP(
-		&targetDir, "directory", "d", ".", "target directory")
-	cobra.CheckErr(rootCmd.Execute())
+	cobra.CheckErr(NewCmdRoot().Execute())
 }

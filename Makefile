@@ -2,6 +2,7 @@ PKG=github.com/larsks/halberd
 EXE=halberd-$(shell go env GOOS)-$(shell go env GOARCH)
 
 GOSRC =  main.go \
+	 resources.go \
 	 $(wildcard version/*.go)
 DATA = data/resources.yaml
 
