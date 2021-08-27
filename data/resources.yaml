@@ -195,6 +195,11 @@
   namespaced: true
 - apiGroup: batch
   apiVersion: v1
+  kind: CronJob
+  name: cronjobs
+  namespaced: true
+- apiGroup: batch
+  apiVersion: v1
   kind: Job
   name: jobs
   namespaced: true
@@ -242,6 +247,11 @@
   apiVersion: v1beta1
   kind: Ingress
   name: ingresses
+  namespaced: true
+- apiGroup: policy
+  apiVersion: v1
+  kind: PodDisruptionBudget
+  name: poddisruptionbudgets
   namespaced: true
 - apiGroup: policy
   apiVersion: v1beta1
@@ -325,6 +335,11 @@
   namespaced: false
 - apiGroup: storage.k8s.io
   apiVersion: v1beta1
+  kind: CSIStorageCapacity
+  name: csistoragecapacities
+  namespaced: true
+- apiGroup: storage.k8s.io
+  apiVersion: v1beta1
   kind: StorageClass
   name: storageclasses
   namespaced: false
@@ -394,6 +409,11 @@
   name: runtimeclasses
   namespaced: false
 - apiGroup: discovery.k8s.io
+  apiVersion: v1
+  kind: EndpointSlice
+  name: endpointslices
+  namespaced: true
+- apiGroup: discovery.k8s.io
   apiVersion: v1beta1
   kind: EndpointSlice
   name: endpointslices
@@ -405,16 +425,6 @@
   namespaced: false
 - apiGroup: flowcontrol.apiserver.k8s.io
   apiVersion: v1beta1
-  kind: PriorityLevelConfiguration
-  name: prioritylevelconfigurations
-  namespaced: false
-- apiGroup: flowcontrol.apiserver.k8s.io
-  apiVersion: v1alpha1
-  kind: FlowSchema
-  name: flowschemas
-  namespaced: false
-- apiGroup: flowcontrol.apiserver.k8s.io
-  apiVersion: v1alpha1
   kind: PriorityLevelConfiguration
   name: prioritylevelconfigurations
   namespaced: false
@@ -550,6 +560,11 @@
   namespaced: false
 - apiGroup: oauth.openshift.io
   apiVersion: v1
+  kind: TokenReview
+  name: tokenreviews
+  namespaced: false
+- apiGroup: oauth.openshift.io
+  apiVersion: v1
   kind: UserOAuthAccessToken
   name: useroauthaccesstokens
   namespaced: false
@@ -650,58 +665,8 @@
   namespaced: true
 - apiGroup: config.openshift.io
   apiVersion: v1
-  kind: Network
-  name: networks
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: DNS
-  name: dnses
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: Image
-  name: images
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: Console
-  name: consoles
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: Build
-  name: builds
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: Scheduler
-  name: schedulers
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
   kind: OAuth
   name: oauths
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: FeatureGate
-  name: featuregates
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: Ingress
-  name: ingresses
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: Infrastructure
-  name: infrastructures
-  namespaced: false
-- apiGroup: config.openshift.io
-  apiVersion: v1
-  kind: ClusterOperator
-  name: clusteroperators
   namespaced: false
 - apiGroup: config.openshift.io
   apiVersion: v1
@@ -710,8 +675,48 @@
   namespaced: false
 - apiGroup: config.openshift.io
   apiVersion: v1
+  kind: Network
+  name: networks
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
   kind: OperatorHub
   name: operatorhubs
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
+  kind: Project
+  name: projects
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
+  kind: Console
+  name: consoles
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
+  kind: Authentication
+  name: authentications
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
+  kind: FeatureGate
+  name: featuregates
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
+  kind: Image
+  name: images
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
+  kind: ClusterOperator
+  name: clusteroperators
+  namespaced: false
+- apiGroup: config.openshift.io
+  apiVersion: v1
+  kind: Scheduler
+  name: schedulers
   namespaced: false
 - apiGroup: config.openshift.io
   apiVersion: v1
@@ -720,8 +725,8 @@
   namespaced: false
 - apiGroup: config.openshift.io
   apiVersion: v1
-  kind: Authentication
-  name: authentications
+  kind: Infrastructure
+  name: infrastructures
   namespaced: false
 - apiGroup: config.openshift.io
   apiVersion: v1
@@ -730,38 +735,18 @@
   namespaced: false
 - apiGroup: config.openshift.io
   apiVersion: v1
-  kind: Project
-  name: projects
+  kind: Build
+  name: builds
   namespaced: false
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: Authentication
-  name: authentications
-  namespaced: false
-- apiGroup: operator.openshift.io
+- apiGroup: config.openshift.io
   apiVersion: v1
   kind: DNS
   name: dnses
   namespaced: false
-- apiGroup: operator.openshift.io
+- apiGroup: config.openshift.io
   apiVersion: v1
-  kind: CloudCredential
-  name: cloudcredentials
-  namespaced: false
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: IngressController
-  name: ingresscontrollers
-  namespaced: true
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: Console
-  name: consoles
-  namespaced: false
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: KubeScheduler
-  name: kubeschedulers
+  kind: Ingress
+  name: ingresses
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
@@ -770,33 +755,13 @@
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
-  kind: KubeControllerManager
-  name: kubecontrollermanagers
+  kind: KubeScheduler
+  name: kubeschedulers
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
-  kind: Etcd
-  name: etcds
-  namespaced: false
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: OpenShiftControllerManager
-  name: openshiftcontrollermanagers
-  namespaced: false
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: OpenShiftAPIServer
-  name: openshiftapiservers
-  namespaced: false
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: Network
-  name: networks
-  namespaced: false
-- apiGroup: operator.openshift.io
-  apiVersion: v1
-  kind: KubeStorageVersionMigrator
-  name: kubestorageversionmigrators
+  kind: CloudCredential
+  name: cloudcredentials
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
@@ -805,13 +770,18 @@
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
-  kind: Config
-  name: configs
+  kind: KubeControllerManager
+  name: kubecontrollermanagers
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
-  kind: ClusterCSIDriver
-  name: clustercsidrivers
+  kind: Console
+  name: consoles
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: Authentication
+  name: authentications
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
@@ -820,18 +790,103 @@
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1
+  kind: Etcd
+  name: etcds
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: DNS
+  name: dnses
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: IngressController
+  name: ingresscontrollers
+  namespaced: true
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: OpenShiftAPIServer
+  name: openshiftapiservers
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
   kind: Storage
   name: storages
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: KubeStorageVersionMigrator
+  name: kubestorageversionmigrators
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: ClusterCSIDriver
+  name: clustercsidrivers
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: Config
+  name: configs
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: Network
+  name: networks
+  namespaced: false
+- apiGroup: operator.openshift.io
+  apiVersion: v1
+  kind: OpenShiftControllerManager
+  name: openshiftcontrollermanagers
   namespaced: false
 - apiGroup: operator.openshift.io
   apiVersion: v1alpha1
   kind: ImageContentSourcePolicy
   name: imagecontentsourcepolicies
   namespaced: false
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1
+  kind: Challenge
+  name: challenges
+  namespaced: true
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1
+  kind: Order
+  name: orders
+  namespaced: true
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1beta1
+  kind: Challenge
+  name: challenges
+  namespaced: true
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1beta1
+  kind: Order
+  name: orders
+  namespaced: true
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1alpha3
+  kind: Order
+  name: orders
+  namespaced: true
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1alpha3
+  kind: Challenge
+  name: challenges
+  namespaced: true
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1alpha2
+  kind: Order
+  name: orders
+  namespaced: true
+- apiGroup: acme.cert-manager.io
+  apiVersion: v1alpha2
+  kind: Challenge
+  name: challenges
+  namespaced: true
 - apiGroup: agent.open-cluster-management.io
   apiVersion: v1
-  kind: SearchCollector
-  name: searchcollectors
+  kind: PolicyController
+  name: policycontrollers
   namespaced: true
 - apiGroup: agent.open-cluster-management.io
   apiVersion: v1
@@ -845,19 +900,24 @@
   namespaced: true
 - apiGroup: agent.open-cluster-management.io
   apiVersion: v1
-  kind: PolicyController
-  name: policycontrollers
-  namespaced: true
-- apiGroup: agent.open-cluster-management.io
-  apiVersion: v1
-  kind: CertPolicyController
-  name: certpolicycontrollers
+  kind: SearchCollector
+  name: searchcollectors
   namespaced: true
 - apiGroup: agent.open-cluster-management.io
   apiVersion: v1
   kind: WorkManager
   name: workmanagers
   namespaced: true
+- apiGroup: agent.open-cluster-management.io
+  apiVersion: v1
+  kind: CertPolicyController
+  name: certpolicycontrollers
+  namespaced: true
+- apiGroup: apiserver.openshift.io
+  apiVersion: v1
+  kind: APIRequestCount
+  name: apirequestcounts
+  namespaced: false
 - apiGroup: apps.open-cluster-management.io
   apiVersion: v1
   kind: Deployable
@@ -885,48 +945,23 @@
   namespaced: true
 - apiGroup: ceph.rook.io
   apiVersion: v1
-  kind: CephObjectStoreUser
-  name: cephobjectstoreusers
-  namespaced: true
-- apiGroup: ceph.rook.io
-  apiVersion: v1
-  kind: CephClient
-  name: cephclients
-  namespaced: true
-- apiGroup: ceph.rook.io
-  apiVersion: v1
-  kind: CephObjectZoneGroup
-  name: cephobjectzonegroups
-  namespaced: true
-- apiGroup: ceph.rook.io
-  apiVersion: v1
-  kind: CephBlockPool
-  name: cephblockpools
-  namespaced: true
-- apiGroup: ceph.rook.io
-  apiVersion: v1
-  kind: CephObjectZone
-  name: cephobjectzones
-  namespaced: true
-- apiGroup: ceph.rook.io
-  apiVersion: v1
-  kind: CephRBDMirror
-  name: cephrbdmirrors
-  namespaced: true
-- apiGroup: ceph.rook.io
-  apiVersion: v1
-  kind: CephFilesystem
-  name: cephfilesystems
-  namespaced: true
-- apiGroup: ceph.rook.io
-  apiVersion: v1
   kind: CephObjectStore
   name: cephobjectstores
   namespaced: true
 - apiGroup: ceph.rook.io
   apiVersion: v1
-  kind: CephCluster
-  name: cephclusters
+  kind: CephObjectStoreUser
+  name: cephobjectstoreusers
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephObjectRealm
+  name: cephobjectrealms
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephFilesystemMirror
+  name: cephfilesystemmirrors
   namespaced: true
 - apiGroup: ceph.rook.io
   apiVersion: v1
@@ -935,18 +970,123 @@
   namespaced: true
 - apiGroup: ceph.rook.io
   apiVersion: v1
-  kind: CephObjectRealm
-  name: cephobjectrealms
+  kind: CephFilesystem
+  name: cephfilesystems
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephObjectZone
+  name: cephobjectzones
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephBlockPool
+  name: cephblockpools
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephClient
+  name: cephclients
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephCluster
+  name: cephclusters
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephRBDMirror
+  name: cephrbdmirrors
+  namespaced: true
+- apiGroup: ceph.rook.io
+  apiVersion: v1
+  kind: CephObjectZoneGroup
+  name: cephobjectzonegroups
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1
+  kind: Issuer
+  name: issuers
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1
+  kind: Certificate
+  name: certificates
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1
+  kind: ClusterIssuer
+  name: clusterissuers
+  namespaced: false
+- apiGroup: cert-manager.io
+  apiVersion: v1
+  kind: CertificateRequest
+  name: certificaterequests
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1beta1
+  kind: CertificateRequest
+  name: certificaterequests
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1beta1
+  kind: Issuer
+  name: issuers
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1beta1
+  kind: Certificate
+  name: certificates
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1beta1
+  kind: ClusterIssuer
+  name: clusterissuers
+  namespaced: false
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha3
+  kind: Certificate
+  name: certificates
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha3
+  kind: ClusterIssuer
+  name: clusterissuers
+  namespaced: false
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha3
+  kind: CertificateRequest
+  name: certificaterequests
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha3
+  kind: Issuer
+  name: issuers
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha2
+  kind: Certificate
+  name: certificates
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha2
+  kind: ClusterIssuer
+  name: clusterissuers
+  namespaced: false
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha2
+  kind: CertificateRequest
+  name: certificaterequests
+  namespaced: true
+- apiGroup: cert-manager.io
+  apiVersion: v1alpha2
+  kind: Issuer
+  name: issuers
   namespaced: true
 - apiGroup: cloudcredential.openshift.io
   apiVersion: v1
   kind: CredentialsRequest
   name: credentialsrequests
-  namespaced: true
-- apiGroup: cluster.ray.io
-  apiVersion: v1
-  kind: RayCluster
-  name: rayclusters
   namespaced: true
 - apiGroup: console.openshift.io
   apiVersion: v1
@@ -955,13 +1095,18 @@
   namespaced: false
 - apiGroup: console.openshift.io
   apiVersion: v1
+  kind: ConsoleNotification
+  name: consolenotifications
+  namespaced: false
+- apiGroup: console.openshift.io
+  apiVersion: v1
   kind: ConsoleYAMLSample
   name: consoleyamlsamples
   namespaced: false
 - apiGroup: console.openshift.io
   apiVersion: v1
-  kind: ConsoleNotification
-  name: consolenotifications
+  kind: ConsoleCLIDownload
+  name: consoleclidownloads
   namespaced: false
 - apiGroup: console.openshift.io
   apiVersion: v1
@@ -974,154 +1119,19 @@
   name: consolelinks
   namespaced: false
 - apiGroup: console.openshift.io
-  apiVersion: v1
-  kind: ConsoleCLIDownload
-  name: consoleclidownloads
-  namespaced: false
-- apiGroup: console.openshift.io
   apiVersion: v1alpha1
   kind: ConsolePlugin
   name: consoleplugins
-  namespaced: false
-- apiGroup: eventing.knative.dev
-  apiVersion: v1
-  kind: Trigger
-  name: triggers
-  namespaced: true
-- apiGroup: eventing.knative.dev
-  apiVersion: v1
-  kind: Broker
-  name: brokers
-  namespaced: true
-- apiGroup: eventing.knative.dev
-  apiVersion: v1beta1
-  kind: Trigger
-  name: triggers
-  namespaced: true
-- apiGroup: eventing.knative.dev
-  apiVersion: v1beta1
-  kind: Broker
-  name: brokers
-  namespaced: true
-- apiGroup: eventing.knative.dev
-  apiVersion: v1beta1
-  kind: EventType
-  name: eventtypes
-  namespaced: true
-- apiGroup: flows.knative.dev
-  apiVersion: v1
-  kind: Sequence
-  name: sequences
-  namespaced: true
-- apiGroup: flows.knative.dev
-  apiVersion: v1
-  kind: Parallel
-  name: parallels
-  namespaced: true
-- apiGroup: flows.knative.dev
-  apiVersion: v1beta1
-  kind: Sequence
-  name: sequences
-  namespaced: true
-- apiGroup: flows.knative.dev
-  apiVersion: v1beta1
-  kind: Parallel
-  name: parallels
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterPool
-  name: clusterpools
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterImageSet
-  name: clusterimagesets
-  namespaced: false
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: SyncIdentityProvider
-  name: syncidentityproviders
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterProvision
-  name: clusterprovisions
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: MachinePool
-  name: machinepools
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: SelectorSyncIdentityProvider
-  name: selectorsyncidentityproviders
-  namespaced: false
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: SelectorSyncSet
-  name: selectorsyncsets
-  namespaced: false
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterClaim
-  name: clusterclaims
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterRelocate
-  name: clusterrelocates
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: SyncSet
-  name: syncsets
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterDeployment
-  name: clusterdeployments
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: MachinePoolNameLease
-  name: machinepoolnameleases
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: Checkpoint
-  name: checkpoints
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: DNSZone
-  name: dnszones
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterState
-  name: clusterstates
-  namespaced: true
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: HiveConfig
-  name: hiveconfigs
-  namespaced: false
-- apiGroup: hive.openshift.io
-  apiVersion: v1
-  kind: ClusterDeprovision
-  name: clusterdeprovisions
-  namespaced: true
-- apiGroup: imageregistry.operator.openshift.io
-  apiVersion: v1
-  kind: Config
-  name: configs
   namespaced: false
 - apiGroup: imageregistry.operator.openshift.io
   apiVersion: v1
   kind: ImagePruner
   name: imagepruners
+  namespaced: false
+- apiGroup: imageregistry.operator.openshift.io
+  apiVersion: v1
+  kind: Config
+  name: configs
   namespaced: false
 - apiGroup: ingress.operator.openshift.io
   apiVersion: v1
@@ -1132,71 +1142,6 @@
   apiVersion: v1
   kind: NetworkAttachmentDefinition
   name: network-attachment-definitions
-  namespaced: true
-- apiGroup: kfdef.apps.kubeflow.org
-  apiVersion: v1
-  kind: KfDef
-  name: kfdefs
-  namespaced: true
-- apiGroup: kubeflow.org
-  apiVersion: v1
-  kind: Profile
-  name: profiles
-  namespaced: false
-- apiGroup: kubeflow.org
-  apiVersion: v1beta1
-  kind: Profile
-  name: profiles
-  namespaced: false
-- apiGroup: kubeflow.org
-  apiVersion: v1beta1
-  kind: ScheduledWorkflow
-  name: scheduledworkflows
-  namespaced: true
-- apiGroup: kubeflow.org
-  apiVersion: v1beta1
-  kind: Viewer
-  name: viewers
-  namespaced: true
-- apiGroup: local.storage.openshift.io
-  apiVersion: v1
-  kind: LocalVolume
-  name: localvolumes
-  namespaced: true
-- apiGroup: local.storage.openshift.io
-  apiVersion: v1alpha1
-  kind: LocalVolumeDiscoveryResult
-  name: localvolumediscoveryresults
-  namespaced: true
-- apiGroup: local.storage.openshift.io
-  apiVersion: v1alpha1
-  kind: LocalVolumeSet
-  name: localvolumesets
-  namespaced: true
-- apiGroup: local.storage.openshift.io
-  apiVersion: v1alpha1
-  kind: LocalVolumeDiscovery
-  name: localvolumediscoveries
-  namespaced: true
-- apiGroup: logging.openshift.io
-  apiVersion: v1
-  kind: ClusterLogForwarder
-  name: clusterlogforwarders
-  namespaced: true
-- apiGroup: logging.openshift.io
-  apiVersion: v1
-  kind: Elasticsearch
-  name: elasticsearches
-  namespaced: true
-- apiGroup: logging.openshift.io
-  apiVersion: v1
-  kind: Kibana
-  name: kibanas
-  namespaced: true
-- apiGroup: logging.openshift.io
-  apiVersion: v1
-  kind: ClusterLogging
-  name: clusterloggings
   namespaced: true
 - apiGroup: machineconfiguration.openshift.io
   apiVersion: v1
@@ -1215,108 +1160,18 @@
   namespaced: false
 - apiGroup: machineconfiguration.openshift.io
   apiVersion: v1
-  kind: MachineConfig
-  name: machineconfigs
-  namespaced: false
-- apiGroup: machineconfiguration.openshift.io
-  apiVersion: v1
   kind: MachineConfigPool
   name: machineconfigpools
   namespaced: false
-- apiGroup: machinelearning.seldon.io
+- apiGroup: machineconfiguration.openshift.io
   apiVersion: v1
-  kind: SeldonDeployment
-  name: seldondeployments
-  namespaced: true
-- apiGroup: machinelearning.seldon.io
-  apiVersion: v1alpha3
-  kind: SeldonDeployment
-  name: seldondeployments
-  namespaced: true
-- apiGroup: machinelearning.seldon.io
-  apiVersion: v1alpha2
-  kind: SeldonDeployment
-  name: seldondeployments
-  namespaced: true
-- apiGroup: messaging.knative.dev
-  apiVersion: v1
-  kind: InMemoryChannel
-  name: inmemorychannels
-  namespaced: true
-- apiGroup: messaging.knative.dev
-  apiVersion: v1
-  kind: Channel
-  name: channels
-  namespaced: true
-- apiGroup: messaging.knative.dev
-  apiVersion: v1
-  kind: Subscription
-  name: subscriptions
-  namespaced: true
-- apiGroup: messaging.knative.dev
-  apiVersion: v1beta1
-  kind: InMemoryChannel
-  name: inmemorychannels
-  namespaced: true
-- apiGroup: messaging.knative.dev
-  apiVersion: v1beta1
-  kind: Channel
-  name: channels
-  namespaced: true
-- apiGroup: messaging.knative.dev
-  apiVersion: v1beta1
-  kind: Subscription
-  name: subscriptions
-  namespaced: true
-- apiGroup: metering.openshift.io
-  apiVersion: v1
-  kind: HiveTable
-  name: hivetables
-  namespaced: true
-- apiGroup: metering.openshift.io
-  apiVersion: v1
-  kind: ReportDataSource
-  name: reportdatasources
-  namespaced: true
-- apiGroup: metering.openshift.io
-  apiVersion: v1
-  kind: ReportQuery
-  name: reportqueries
-  namespaced: true
-- apiGroup: metering.openshift.io
-  apiVersion: v1
-  kind: StorageLocation
-  name: storagelocations
-  namespaced: true
-- apiGroup: metering.openshift.io
-  apiVersion: v1
-  kind: MeteringConfig
-  name: meteringconfigs
-  namespaced: true
-- apiGroup: metering.openshift.io
-  apiVersion: v1
-  kind: PrestoTable
-  name: prestotables
-  namespaced: true
-- apiGroup: metering.openshift.io
-  apiVersion: v1
-  kind: Report
-  name: reports
-  namespaced: true
+  kind: MachineConfig
+  name: machineconfigs
+  namespaced: false
 - apiGroup: monitoring.coreos.com
   apiVersion: v1
-  kind: ThanosRuler
-  name: thanosrulers
-  namespaced: true
-- apiGroup: monitoring.coreos.com
-  apiVersion: v1
-  kind: PodMonitor
-  name: podmonitors
-  namespaced: true
-- apiGroup: monitoring.coreos.com
-  apiVersion: v1
-  kind: Probe
-  name: probes
+  kind: Prometheus
+  name: prometheuses
   namespaced: true
 - apiGroup: monitoring.coreos.com
   apiVersion: v1
@@ -1325,8 +1180,18 @@
   namespaced: true
 - apiGroup: monitoring.coreos.com
   apiVersion: v1
-  kind: ServiceMonitor
-  name: servicemonitors
+  kind: ThanosRuler
+  name: thanosrulers
+  namespaced: true
+- apiGroup: monitoring.coreos.com
+  apiVersion: v1
+  kind: Probe
+  name: probes
+  namespaced: true
+- apiGroup: monitoring.coreos.com
+  apiVersion: v1
+  kind: PodMonitor
+  name: podmonitors
   namespaced: true
 - apiGroup: monitoring.coreos.com
   apiVersion: v1
@@ -1335,8 +1200,8 @@
   namespaced: true
 - apiGroup: monitoring.coreos.com
   apiVersion: v1
-  kind: Prometheus
-  name: prometheuses
+  kind: ServiceMonitor
+  name: servicemonitors
   namespaced: true
 - apiGroup: monitoring.coreos.com
   apiVersion: v1alpha1
@@ -1365,28 +1230,23 @@
   namespaced: false
 - apiGroup: network.operator.openshift.io
   apiVersion: v1
+  kind: EgressRouter
+  name: egressrouters
+  namespaced: true
+- apiGroup: network.operator.openshift.io
+  apiVersion: v1
   kind: OperatorPKI
   name: operatorpkis
-  namespaced: true
-- apiGroup: networkaddonsoperator.network.kubevirt.io
-  apiVersion: v1
-  kind: NetworkAddonsConfig
-  name: networkaddonsconfigs
-  namespaced: false
-- apiGroup: networkaddonsoperator.network.kubevirt.io
-  apiVersion: v1alpha1
-  kind: NetworkAddonsConfig
-  name: networkaddonsconfigs
-  namespaced: false
-- apiGroup: ocs.openshift.io
-  apiVersion: v1
-  kind: OCSInitialization
-  name: ocsinitializations
   namespaced: true
 - apiGroup: ocs.openshift.io
   apiVersion: v1
   kind: StorageCluster
   name: storageclusters
+  namespaced: true
+- apiGroup: ocs.openshift.io
+  apiVersion: v1
+  kind: OCSInitialization
+  name: ocsinitializations
   namespaced: true
 - apiGroup: operator.open-cluster-management.io
   apiVersion: v1
@@ -1394,9 +1254,9 @@
   name: klusterlets
   namespaced: false
 - apiGroup: operators.coreos.com
-  apiVersion: v1
-  kind: OperatorGroup
-  name: operatorgroups
+  apiVersion: v2
+  kind: OperatorCondition
+  name: operatorconditions
   namespaced: true
 - apiGroup: operators.coreos.com
   apiVersion: v1
@@ -1409,19 +1269,14 @@
   name: operators
   namespaced: false
 - apiGroup: operators.coreos.com
-  apiVersion: v1alpha2
+  apiVersion: v1
   kind: OperatorGroup
   name: operatorgroups
   namespaced: true
 - apiGroup: operators.coreos.com
-  apiVersion: v1alpha1
-  kind: CatalogSource
-  name: catalogsources
-  namespaced: true
-- apiGroup: operators.coreos.com
-  apiVersion: v1alpha1
-  kind: InstallPlan
-  name: installplans
+  apiVersion: v1alpha2
+  kind: OperatorGroup
+  name: operatorgroups
   namespaced: true
 - apiGroup: operators.coreos.com
   apiVersion: v1alpha1
@@ -1430,8 +1285,18 @@
   namespaced: true
 - apiGroup: operators.coreos.com
   apiVersion: v1alpha1
+  kind: CatalogSource
+  name: catalogsources
+  namespaced: true
+- apiGroup: operators.coreos.com
+  apiVersion: v1alpha1
   kind: Subscription
   name: subscriptions
+  namespaced: true
+- apiGroup: operators.coreos.com
+  apiVersion: v1alpha1
+  kind: InstallPlan
+  name: installplans
   namespaced: true
 - apiGroup: policy.open-cluster-management.io
   apiVersion: v1
@@ -1440,8 +1305,8 @@
   namespaced: true
 - apiGroup: policy.open-cluster-management.io
   apiVersion: v1
-  kind: Policy
-  name: policies
+  kind: ConfigurationPolicy
+  name: configurationpolicies
   namespaced: true
 - apiGroup: policy.open-cluster-management.io
   apiVersion: v1
@@ -1450,74 +1315,19 @@
   namespaced: true
 - apiGroup: policy.open-cluster-management.io
   apiVersion: v1
-  kind: ConfigurationPolicy
-  name: configurationpolicies
-  namespaced: true
-- apiGroup: prow.k8s.io
-  apiVersion: v1
-  kind: ProwJob
-  name: prowjobs
-  namespaced: true
-- apiGroup: radanalytics.io
-  apiVersion: v1
-  kind: SparkHistoryServer
-  name: sparkhistoryservers
-  namespaced: true
-- apiGroup: radanalytics.io
-  apiVersion: v1
-  kind: SparkCluster
-  name: sparkclusters
-  namespaced: true
-- apiGroup: radanalytics.io
-  apiVersion: v1
-  kind: SparkApplication
-  name: sparkapplications
+  kind: Policy
+  name: policies
   namespaced: true
 - apiGroup: samples.operator.openshift.io
   apiVersion: v1
   kind: Config
   name: configs
   namespaced: false
-- apiGroup: sdap.apache.org
-  apiVersion: v1
-  kind: GitBasedConfig
-  name: gitbasedconfigs
-  namespaced: true
 - apiGroup: security.internal.openshift.io
   apiVersion: v1
   kind: RangeAllocation
   name: rangeallocations
   namespaced: false
-- apiGroup: serving.knative.dev
-  apiVersion: v1
-  kind: Service
-  name: services
-  namespaced: true
-- apiGroup: serving.knative.dev
-  apiVersion: v1
-  kind: Configuration
-  name: configurations
-  namespaced: true
-- apiGroup: serving.knative.dev
-  apiVersion: v1
-  kind: Revision
-  name: revisions
-  namespaced: true
-- apiGroup: serving.knative.dev
-  apiVersion: v1
-  kind: Route
-  name: routes
-  namespaced: true
-- apiGroup: serving.knative.dev
-  apiVersion: v1alpha1
-  kind: DomainMapping
-  name: domainmappings
-  namespaced: true
-- apiGroup: snapshot.storage.k8s.io
-  apiVersion: v1
-  kind: VolumeSnapshot
-  name: volumesnapshots
-  namespaced: true
 - apiGroup: snapshot.storage.k8s.io
   apiVersion: v1
   kind: VolumeSnapshotClass
@@ -1525,13 +1335,18 @@
   namespaced: false
 - apiGroup: snapshot.storage.k8s.io
   apiVersion: v1
+  kind: VolumeSnapshot
+  name: volumesnapshots
+  namespaced: true
+- apiGroup: snapshot.storage.k8s.io
+  apiVersion: v1
   kind: VolumeSnapshotContent
   name: volumesnapshotcontents
   namespaced: false
 - apiGroup: snapshot.storage.k8s.io
   apiVersion: v1beta1
-  kind: VolumeSnapshotContent
-  name: volumesnapshotcontents
+  kind: VolumeSnapshotClass
+  name: volumesnapshotclasses
   namespaced: false
 - apiGroup: snapshot.storage.k8s.io
   apiVersion: v1beta1
@@ -1540,434 +1355,44 @@
   namespaced: true
 - apiGroup: snapshot.storage.k8s.io
   apiVersion: v1beta1
-  kind: VolumeSnapshotClass
-  name: volumesnapshotclasses
+  kind: VolumeSnapshotContent
+  name: volumesnapshotcontents
   namespaced: false
-- apiGroup: sources.knative.dev
+- apiGroup: tuned.openshift.io
   apiVersion: v1
-  kind: ApiServerSource
-  name: apiserversources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1
-  kind: SinkBinding
-  name: sinkbindings
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1
-  kind: ContainerSource
-  name: containersources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1beta1
-  kind: ContainerSource
-  name: containersources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1beta1
-  kind: ApiServerSource
-  name: apiserversources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1beta1
-  kind: SinkBinding
-  name: sinkbindings
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1beta1
-  kind: PingSource
-  name: pingsources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1alpha2
-  kind: ApiServerSource
-  name: apiserversources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1alpha2
-  kind: SinkBinding
-  name: sinkbindings
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1alpha2
-  kind: PingSource
-  name: pingsources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1alpha2
-  kind: ContainerSource
-  name: containersources
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1alpha1
-  kind: SinkBinding
-  name: sinkbindings
-  namespaced: true
-- apiGroup: sources.knative.dev
-  apiVersion: v1alpha1
-  kind: ApiServerSource
-  name: apiserversources
+  kind: Profile
+  name: profiles
   namespaced: true
 - apiGroup: tuned.openshift.io
   apiVersion: v1
   kind: Tuned
   name: tuneds
   namespaced: true
-- apiGroup: tuned.openshift.io
-  apiVersion: v1
-  kind: Profile
-  name: profiles
-  namespaced: true
 - apiGroup: work.open-cluster-management.io
   apiVersion: v1
   kind: AppliedManifestWork
   name: appliedmanifestworks
   namespaced: false
-- apiGroup: argoproj.io
-  apiVersion: v1alpha1
-  kind: Workflow
-  name: workflows
-  namespaced: true
-- apiGroup: argoproj.io
-  apiVersion: v1alpha1
-  kind: WorkflowTemplate
-  name: workflowtemplates
-  namespaced: true
-- apiGroup: argoproj.io
-  apiVersion: v1alpha1
-  kind: WorkflowEventBinding
-  name: workfloweventbindings
-  namespaced: true
-- apiGroup: argoproj.io
-  apiVersion: v1alpha1
-  kind: CronWorkflow
-  name: cronworkflows
-  namespaced: true
-- apiGroup: argoproj.io
-  apiVersion: v1alpha1
-  kind: ClusterWorkflowTemplate
-  name: clusterworkflowtemplates
-  namespaced: false
-- apiGroup: authentication.istio.io
-  apiVersion: v1alpha1
-  kind: Policy
-  name: policies
-  namespaced: true
-- apiGroup: authentication.istio.io
-  apiVersion: v1alpha1
-  kind: MeshPolicy
-  name: meshpolicies
-  namespaced: false
-- apiGroup: autoscaling.internal.knative.dev
-  apiVersion: v1alpha1
-  kind: Metric
-  name: metrics
-  namespaced: true
-- apiGroup: autoscaling.internal.knative.dev
-  apiVersion: v1alpha1
-  kind: PodAutoscaler
-  name: podautoscalers
-  namespaced: true
-- apiGroup: caching.internal.knative.dev
-  apiVersion: v1alpha1
-  kind: Image
-  name: images
-  namespaced: true
-- apiGroup: cdi.kubevirt.io
-  apiVersion: v1beta1
-  kind: CDIConfig
-  name: cdiconfigs
-  namespaced: false
-- apiGroup: cdi.kubevirt.io
-  apiVersion: v1beta1
-  kind: DataVolume
-  name: datavolumes
-  namespaced: true
-- apiGroup: cdi.kubevirt.io
-  apiVersion: v1beta1
-  kind: CDI
-  name: cdis
-  namespaced: false
-- apiGroup: cdi.kubevirt.io
-  apiVersion: v1alpha1
-  kind: CDIConfig
-  name: cdiconfigs
-  namespaced: false
-- apiGroup: cdi.kubevirt.io
-  apiVersion: v1alpha1
-  kind: DataVolume
-  name: datavolumes
-  namespaced: true
-- apiGroup: cdi.kubevirt.io
-  apiVersion: v1alpha1
-  kind: CDI
-  name: cdis
-  namespaced: false
-- apiGroup: certmanager.k8s.io
-  apiVersion: v1alpha1
-  kind: Order
-  name: orders
-  namespaced: true
-- apiGroup: certmanager.k8s.io
-  apiVersion: v1alpha1
-  kind: Challenge
-  name: challenges
-  namespaced: true
-- apiGroup: certmanager.k8s.io
-  apiVersion: v1alpha1
-  kind: ClusterIssuer
-  name: clusterissuers
-  namespaced: false
-- apiGroup: certmanager.k8s.io
-  apiVersion: v1alpha1
-  kind: Certificate
-  name: certificates
-  namespaced: true
-- apiGroup: certmanager.k8s.io
-  apiVersion: v1alpha1
-  kind: Issuer
-  name: issuers
-  namespaced: true
 - apiGroup: cluster.open-cluster-management.io
   apiVersion: v1alpha1
   kind: ClusterClaim
   name: clusterclaims
   namespaced: false
-- apiGroup: controller.devfile.io
-  apiVersion: v1alpha1
-  kind: Component
-  name: components
-  namespaced: true
-- apiGroup: controller.devfile.io
-  apiVersion: v1alpha1
-  kind: WorkspaceRouting
-  name: workspaceroutings
-  namespaced: true
 - apiGroup: controlplane.operator.openshift.io
   apiVersion: v1alpha1
   kind: PodNetworkConnectivityCheck
   name: podnetworkconnectivitychecks
   namespaced: true
-- apiGroup: core.observatorium.io
-  apiVersion: v1alpha1
-  kind: Observatorium
-  name: observatoria
-  namespaced: true
-- apiGroup: dashboard.tekton.dev
-  apiVersion: v1alpha1
-  kind: Extension
-  name: extensions
-  namespaced: true
-- apiGroup: hco.kubevirt.io
-  apiVersion: v1beta1
-  kind: HyperConverged
-  name: hyperconvergeds
-  namespaced: true
-- apiGroup: hco.kubevirt.io
-  apiVersion: v1alpha1
-  kind: HyperConverged
-  name: hyperconvergeds
-  namespaced: true
-- apiGroup: hiveinternal.openshift.io
-  apiVersion: v1alpha1
-  kind: ClusterSyncLease
-  name: clustersyncleases
-  namespaced: true
-- apiGroup: hiveinternal.openshift.io
-  apiVersion: v1alpha1
-  kind: ClusterSync
-  name: clustersyncs
-  namespaced: true
-- apiGroup: hostpathprovisioner.kubevirt.io
-  apiVersion: v1beta1
-  kind: HostPathProvisioner
-  name: hostpathprovisioners
-  namespaced: false
-- apiGroup: hostpathprovisioner.kubevirt.io
-  apiVersion: v1alpha1
-  kind: HostPathProvisioner
-  name: hostpathprovisioners
-  namespaced: false
-- apiGroup: hyperfoil.io
-  apiVersion: v1alpha1
-  kind: Horreum
-  name: horreums
-  namespaced: true
-- apiGroup: integreatly.org
-  apiVersion: v1alpha1
-  kind: GrafanaDashboard
-  name: grafanadashboards
-  namespaced: true
-- apiGroup: integreatly.org
-  apiVersion: v1alpha1
-  kind: Grafana
-  name: grafanas
-  namespaced: true
-- apiGroup: integreatly.org
-  apiVersion: v1alpha1
-  kind: GrafanaDataSource
-  name: grafanadatasources
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaUser
-  name: kafkausers
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaMirrorMaker2
-  name: kafkamirrormaker2s
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaBridge
-  name: kafkabridges
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaMirrorMaker
-  name: kafkamirrormakers
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: Kafka
-  name: kafkas
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaRebalance
-  name: kafkarebalances
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaConnector
-  name: kafkaconnectors
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaConnect
-  name: kafkaconnects
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaConnectS2I
-  name: kafkaconnects2is
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta2
-  kind: KafkaTopic
-  name: kafkatopics
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta1
-  kind: KafkaMirrorMaker
-  name: kafkamirrormakers
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta1
-  kind: Kafka
-  name: kafkas
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta1
-  kind: KafkaConnect
-  name: kafkaconnects
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta1
-  kind: KafkaConnectS2I
-  name: kafkaconnects2is
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta1
-  kind: KafkaTopic
-  name: kafkatopics
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1beta1
-  kind: KafkaUser
-  name: kafkausers
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaUser
-  name: kafkausers
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaMirrorMaker2
-  name: kafkamirrormaker2s
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaBridge
-  name: kafkabridges
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaMirrorMaker
-  name: kafkamirrormakers
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: Kafka
-  name: kafkas
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaRebalance
-  name: kafkarebalances
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaConnector
-  name: kafkaconnectors
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaConnect
-  name: kafkaconnects
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaConnectS2I
-  name: kafkaconnects2is
-  namespaced: true
-- apiGroup: kafka.strimzi.io
-  apiVersion: v1alpha1
-  kind: KafkaTopic
-  name: kafkatopics
-  namespaced: true
-- apiGroup: metacontroller.k8s.io
-  apiVersion: v1alpha1
-  kind: ControllerRevision
-  name: controllerrevisions
-  namespaced: true
-- apiGroup: metacontroller.k8s.io
-  apiVersion: v1alpha1
-  kind: DecoratorController
-  name: decoratorcontrollers
-  namespaced: false
-- apiGroup: metacontroller.k8s.io
-  apiVersion: v1alpha1
-  kind: CompositeController
-  name: compositecontrollers
-  namespaced: false
-- apiGroup: metal3.io
-  apiVersion: v1alpha1
-  kind: Provisioning
-  name: provisionings
-  namespaced: false
 - apiGroup: metal3.io
   apiVersion: v1alpha1
   kind: BareMetalHost
   name: baremetalhosts
   namespaced: true
-- apiGroup: meteor.operate-first.cloud
+- apiGroup: metal3.io
   apiVersion: v1alpha1
-  kind: Meteor
-  name: meteors
-  namespaced: true
+  kind: Provisioning
+  name: provisionings
+  namespaced: false
 - apiGroup: migration.k8s.io
   apiVersion: v1alpha1
   kind: StorageState
@@ -1978,31 +1403,6 @@
   kind: StorageVersionMigration
   name: storageversionmigrations
   namespaced: false
-- apiGroup: networking.internal.knative.dev
-  apiVersion: v1alpha1
-  kind: Ingress
-  name: ingresses
-  namespaced: true
-- apiGroup: networking.internal.knative.dev
-  apiVersion: v1alpha1
-  kind: ServerlessService
-  name: serverlessservices
-  namespaced: true
-- apiGroup: networking.internal.knative.dev
-  apiVersion: v1alpha1
-  kind: ClusterDomainClaim
-  name: clusterdomainclaims
-  namespaced: false
-- apiGroup: networking.internal.knative.dev
-  apiVersion: v1alpha1
-  kind: Certificate
-  name: certificates
-  namespaced: true
-- apiGroup: nmstate.io
-  apiVersion: v1beta1
-  kind: NodeNetworkState
-  name: nodenetworkstates
-  namespaced: false
 - apiGroup: nmstate.io
   apiVersion: v1beta1
   kind: NodeNetworkConfigurationEnactment
@@ -2010,6 +1410,21 @@
   namespaced: false
 - apiGroup: nmstate.io
   apiVersion: v1beta1
+  kind: NodeNetworkConfigurationPolicy
+  name: nodenetworkconfigurationpolicies
+  namespaced: false
+- apiGroup: nmstate.io
+  apiVersion: v1beta1
+  kind: NMState
+  name: nmstates
+  namespaced: false
+- apiGroup: nmstate.io
+  apiVersion: v1beta1
+  kind: NodeNetworkState
+  name: nodenetworkstates
+  namespaced: false
+- apiGroup: nmstate.io
+  apiVersion: v1alpha1
   kind: NodeNetworkConfigurationPolicy
   name: nodenetworkconfigurationpolicies
   namespaced: false
@@ -2023,20 +1438,20 @@
   kind: NodeNetworkConfigurationEnactment
   name: nodenetworkconfigurationenactments
   namespaced: false
-- apiGroup: nmstate.io
-  apiVersion: v1alpha1
-  kind: NodeNetworkConfigurationPolicy
-  name: nodenetworkconfigurationpolicies
-  namespaced: false
-- apiGroup: noobaa.io
-  apiVersion: v1alpha1
-  kind: NooBaa
-  name: noobaas
-  namespaced: true
 - apiGroup: noobaa.io
   apiVersion: v1alpha1
   kind: BackingStore
   name: backingstores
+  namespaced: true
+- apiGroup: noobaa.io
+  apiVersion: v1alpha1
+  kind: NamespaceStore
+  name: namespacestores
+  namespaced: true
+- apiGroup: noobaa.io
+  apiVersion: v1alpha1
+  kind: NooBaa
+  name: noobaas
   namespaced: true
 - apiGroup: noobaa.io
   apiVersion: v1alpha1
@@ -2053,221 +1468,16 @@
   kind: ObjectBucketClaim
   name: objectbucketclaims
   namespaced: true
-- apiGroup: operator.knative.dev
+- apiGroup: replication.storage.openshift.io
   apiVersion: v1alpha1
-  kind: KnativeServing
-  name: knativeservings
+  kind: VolumeReplication
+  name: volumereplications
   namespaced: true
-- apiGroup: operator.knative.dev
+- apiGroup: replication.storage.openshift.io
   apiVersion: v1alpha1
-  kind: KnativeEventing
-  name: knativeeventings
-  namespaced: true
-- apiGroup: operator.serverless.openshift.io
-  apiVersion: v1alpha1
-  kind: KnativeKafka
-  name: knativekafkas
-  namespaced: true
-- apiGroup: operator.tekton.dev
-  apiVersion: v1alpha1
-  kind: TektonConfig
-  name: tektonconfigs
+  kind: VolumeReplicationClass
+  name: volumereplicationclasses
   namespaced: false
-- apiGroup: operator.tekton.dev
-  apiVersion: v1alpha1
-  kind: TektonPipeline
-  name: tektonpipelines
-  namespaced: false
-- apiGroup: operator.tekton.dev
-  apiVersion: v1alpha1
-  kind: TektonTrigger
-  name: tektontriggers
-  namespaced: false
-- apiGroup: operator.tekton.dev
-  apiVersion: v1alpha1
-  kind: TektonAddon
-  name: tektonaddons
-  namespaced: false
-- apiGroup: rbac.istio.io
-  apiVersion: v1alpha1
-  kind: ClusterRbacConfig
-  name: clusterrbacconfigs
-  namespaced: false
-- apiGroup: rbac.istio.io
-  apiVersion: v1alpha1
-  kind: ServiceRoleBinding
-  name: servicerolebindings
-  namespaced: true
-- apiGroup: rbac.istio.io
-  apiVersion: v1alpha1
-  kind: ServiceRole
-  name: serviceroles
-  namespaced: true
-- apiGroup: rbac.istio.io
-  apiVersion: v1alpha1
-  kind: RbacConfig
-  name: rbacconfigs
-  namespaced: true
-- apiGroup: rbac.istio.io
-  apiVersion: v1alpha1
-  kind: AuthorizationPolicy
-  name: authorizationpolicies
-  namespaced: true
-- apiGroup: snapshot.kubevirt.io
-  apiVersion: v1alpha1
-  kind: VirtualMachineSnapshot
-  name: virtualmachinesnapshots
-  namespaced: true
-- apiGroup: snapshot.kubevirt.io
-  apiVersion: v1alpha1
-  kind: VirtualMachineSnapshotContent
-  name: virtualmachinesnapshotcontents
-  namespaced: true
-- apiGroup: snapshot.kubevirt.io
-  apiVersion: v1alpha1
-  kind: VirtualMachineRestore
-  name: virtualmachinerestores
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1beta1
-  kind: PipelineRun
-  name: pipelineruns
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1beta1
-  kind: Task
-  name: tasks
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1beta1
-  kind: Pipeline
-  name: pipelines
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1beta1
-  kind: ClusterTask
-  name: clustertasks
-  namespaced: false
-- apiGroup: tekton.dev
-  apiVersion: v1beta1
-  kind: TaskRun
-  name: taskruns
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: PipelineRun
-  name: pipelineruns
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: Task
-  name: tasks
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: Pipeline
-  name: pipelines
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: Run
-  name: runs
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: ClusterTask
-  name: clustertasks
-  namespaced: false
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: TaskRun
-  name: taskruns
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: PipelineResource
-  name: pipelineresources
-  namespaced: true
-- apiGroup: tekton.dev
-  apiVersion: v1alpha1
-  kind: Condition
-  name: conditions
-  namespaced: true
-- apiGroup: triggers.tekton.dev
-  apiVersion: v1alpha1
-  kind: ClusterTriggerBinding
-  name: clustertriggerbindings
-  namespaced: false
-- apiGroup: triggers.tekton.dev
-  apiVersion: v1alpha1
-  kind: TriggerBinding
-  name: triggerbindings
-  namespaced: true
-- apiGroup: triggers.tekton.dev
-  apiVersion: v1alpha1
-  kind: EventListener
-  name: eventlisteners
-  namespaced: true
-- apiGroup: triggers.tekton.dev
-  apiVersion: v1alpha1
-  kind: TriggerTemplate
-  name: triggertemplates
-  namespaced: true
-- apiGroup: triggers.tekton.dev
-  apiVersion: v1alpha1
-  kind: Trigger
-  name: triggers
-  namespaced: true
-- apiGroup: upload.cdi.kubevirt.io
-  apiVersion: v1beta1
-  kind: UploadTokenRequest
-  name: uploadtokenrequests
-  namespaced: true
-- apiGroup: upload.cdi.kubevirt.io
-  apiVersion: v1alpha1
-  kind: UploadTokenRequest
-  name: uploadtokenrequests
-  namespaced: true
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1beta1
-  kind: VirtualMachineImport
-  name: virtualmachineimports
-  namespaced: true
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1beta1
-  kind: ResourceMapping
-  name: resourcemappings
-  namespaced: true
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1beta1
-  kind: VMImportConfig
-  name: vmimportconfigs
-  namespaced: false
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1alpha1
-  kind: ResourceMapping
-  name: resourcemappings
-  namespaced: true
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1alpha1
-  kind: V2VVmware
-  name: v2vvmwares
-  namespaced: true
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1alpha1
-  kind: VMImportConfig
-  name: vmimportconfigs
-  namespaced: false
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1alpha1
-  kind: OVirtProvider
-  name: ovirtproviders
-  namespaced: true
-- apiGroup: v2v.kubevirt.io
-  apiVersion: v1alpha1
-  kind: VirtualMachineImport
-  name: virtualmachineimports
-  namespaced: true
 - apiGroup: whereabouts.cni.cncf.io
   apiVersion: v1alpha1
   kind: OverlappingRangeIPReservation
@@ -2278,135 +1488,15 @@
   kind: IPPool
   name: ippools
   namespaced: true
-- apiGroup: workspace.devfile.io
-  apiVersion: v1alpha1
-  kind: DevWorkspace
-  name: devworkspaces
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: handler
-  name: handlers
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: adapter
-  name: adapters
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: instance
-  name: instances
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: rule
-  name: rules
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: QuotaSpec
-  name: quotaspecs
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: template
-  name: templates
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: QuotaSpecBinding
-  name: quotaspecbindings
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: HTTPAPISpec
-  name: httpapispecs
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: HTTPAPISpecBinding
-  name: httpapispecbindings
-  namespaced: true
-- apiGroup: config.istio.io
-  apiVersion: v1alpha2
-  kind: attributemanifest
-  name: attributemanifests
-  namespaced: true
-- apiGroup: kubevirt.io
-  apiVersion: v1alpha3
-  kind: VirtualMachine
-  name: virtualmachines
-  namespaced: true
-- apiGroup: kubevirt.io
-  apiVersion: v1alpha3
-  kind: VirtualMachineInstance
-  name: virtualmachineinstances
-  namespaced: true
-- apiGroup: kubevirt.io
-  apiVersion: v1alpha3
-  kind: KubeVirt
-  name: kubevirts
-  namespaced: true
-- apiGroup: kubevirt.io
-  apiVersion: v1alpha3
-  kind: VirtualMachineInstanceMigration
-  name: virtualmachineinstancemigrations
-  namespaced: true
-- apiGroup: kubevirt.io
-  apiVersion: v1alpha3
-  kind: VirtualMachineInstancePreset
-  name: virtualmachineinstancepresets
-  namespaced: true
-- apiGroup: kubevirt.io
-  apiVersion: v1alpha3
-  kind: VirtualMachineInstanceReplicaSet
-  name: virtualmachineinstancereplicasets
-  namespaced: true
-- apiGroup: networking.istio.io
-  apiVersion: v1alpha3
-  kind: Sidecar
-  name: sidecars
-  namespaced: true
-- apiGroup: networking.istio.io
-  apiVersion: v1alpha3
-  kind: EnvoyFilter
-  name: envoyfilters
-  namespaced: true
-- apiGroup: networking.istio.io
-  apiVersion: v1alpha3
-  kind: VirtualService
-  name: virtualservices
-  namespaced: true
-- apiGroup: networking.istio.io
-  apiVersion: v1alpha3
-  kind: ServiceEntry
-  name: serviceentries
-  namespaced: true
-- apiGroup: networking.istio.io
-  apiVersion: v1alpha3
-  kind: DestinationRule
-  name: destinationrules
-  namespaced: true
-- apiGroup: networking.istio.io
-  apiVersion: v1alpha3
-  kind: Gateway
-  name: gateways
-  namespaced: true
 - apiGroup: helm.openshift.io
   apiVersion: v1beta1
   kind: HelmChartRepository
   name: helmchartrepositories
   namespaced: false
-- apiGroup: koku-metrics-cfg.openshift.io
-  apiVersion: v1beta1
-  kind: KokuMetricsConfig
-  name: kokumetricsconfigs
-  namespaced: true
 - apiGroup: machine.openshift.io
   apiVersion: v1beta1
-  kind: Machine
-  name: machines
+  kind: MachineHealthCheck
+  name: machinehealthchecks
   namespaced: true
 - apiGroup: machine.openshift.io
   apiVersion: v1beta1
@@ -2415,43 +1505,8 @@
   namespaced: true
 - apiGroup: machine.openshift.io
   apiVersion: v1beta1
-  kind: MachineHealthCheck
-  name: machinehealthchecks
-  namespaced: true
-- apiGroup: nodemaintenance.kubevirt.io
-  apiVersion: v1beta1
-  kind: NodeMaintenance
-  name: nodemaintenances
-  namespaced: false
-- apiGroup: pulp.pulpproject.org
-  apiVersion: v1beta1
-  kind: PulpBackup
-  name: pulpbackups
-  namespaced: true
-- apiGroup: pulp.pulpproject.org
-  apiVersion: v1beta1
-  kind: Pulp
-  name: pulps
-  namespaced: true
-- apiGroup: pulp.pulpproject.org
-  apiVersion: v1beta1
-  kind: PulpRestore
-  name: pulprestores
-  namespaced: true
-- apiGroup: ssp.kubevirt.io
-  apiVersion: v1beta1
-  kind: SSP
-  name: ssps
-  namespaced: true
-- apiGroup: sparkoperator.k8s.io
-  apiVersion: v1beta2
-  kind: SparkApplication
-  name: sparkapplications
-  namespaced: true
-- apiGroup: sparkoperator.k8s.io
-  apiVersion: v1beta2
-  kind: ScheduledSparkApplication
-  name: scheduledsparkapplications
+  kind: Machine
+  name: machines
   namespaced: true
 - apiGroup: metrics.k8s.io
   apiVersion: v1beta1
