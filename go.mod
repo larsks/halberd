@@ -1,4 +1,4 @@
-module github.com/operate-first/halberd
+module github.com/larsks/halberd
 
 go 1.16
 

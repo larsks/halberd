@@ -12,6 +12,7 @@ import (
 
 	"os"
 
+	"github.com/larsks/halberd/version"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 )
@@ -187,6 +188,8 @@ into individual files, organized following Operate First standards.`,
 }
 
 func main() {
+	log.Printf("Halberd build %s", version.BuildRef)
+
 	rootCmd.Flags().StringVarP(
 		&apiResourcesPath, "api-resources", "r", "", "api resources information")
 	rootCmd.Flags().StringVarP(
