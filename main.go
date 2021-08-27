@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 	"strings"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"os"
 
@@ -70,7 +72,7 @@ func (r Resource) Key() string {
 func (r Resource) Path() string {
 	spec, exists := apiResourcesMap[r.Key()]
 	if !exists {
-		log.Fatalf("%s: unknown resource", r.Key())
+		log.Fatal().Msgf("%s: unknown resource", r.Key())
 	}
 	return fmt.Sprintf(
 		"%s/%s/%s/%s.yaml",
@@ -86,7 +88,7 @@ func readApiResources() {
 		log.Printf("reading api resources from %s", apiResourcesPath)
 		data, err := ioutil.ReadFile(apiResourcesPath)
 		if err != nil {
-			log.Printf("unable to open resource cache %s; using embedded data",
+			log.Warn().Msgf("unable to open resource cache %s; using embedded data",
 				apiResourcesPath)
 		} else {
 			apiResourcesData = data
@@ -97,7 +99,7 @@ func readApiResources() {
 
 	err := yaml.Unmarshal(apiResourcesData, &apiResources)
 	if err != nil {
-		log.Fatalf("failed to read api resources: %v", err)
+		log.Fatal().Msgf("failed to read api resources: %v", err)
 	}
 	log.Printf("read %d api resources", len(apiResources))
 
@@ -116,33 +118,33 @@ func Split(reader io.Reader) {
 			break
 		}
 		if err != nil {
-			log.Fatalf("failed to decode yaml: %v", err)
+			log.Fatal().Msgf("failed to decode yaml: %v", err)
 		}
 
 		var res Resource
 		err = node.Decode(&res)
 		if err != nil {
-			log.Fatalf("failed to decode resource: %v", err)
+			log.Fatal().Msgf("failed to decode resource: %v", err)
 		}
 		if res.APIVersion == "" {
-			log.Printf("skipping invalid resource")
+			log.Warn().Msgf("skipping invalid resource")
 			continue
 		}
 
 		path := res.Path()
-		log.Printf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
+		log.Info().Msgf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
 		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-			log.Fatalf("failed to create directory %s: %v", path, err)
+			log.Fatal().Msgf("failed to create directory %s: %v", path, err)
 		}
 
 		content, err := yaml.Marshal(&node)
 		if err != nil {
-			log.Fatalf("failed to marshal yaml: %v", err)
+			log.Fatal().Msgf("failed to marshal yaml: %v", err)
 		}
 
 		err = ioutil.WriteFile(path, content, 0644)
 		if err != nil {
-			log.Fatalf("failed to write file: %v", err)
+			log.Fatal().Msgf("failed to write file: %v", err)
 		}
 	}
 }
@@ -164,7 +166,7 @@ into individual files, organized following Operate First standards.`,
 			}
 
 			if updateResources {
-				log.Printf("updating api resource cache")
+				log.Info().Msgf("updating api resource cache")
 				if err := UpdateResources(); err != nil {
 					panic(err)
 				}
@@ -179,14 +181,14 @@ into individual files, organized following Operate First standards.`,
 				for _, path := range args {
 					f, err := os.Open(path)
 					if err != nil {
-						log.Fatal(err)
+						log.Fatal().Err(err)
 					}
 
 					defer f.Close()
 					readers = append(readers, io.Reader(f))
 				}
 			} else {
-				log.Println("Reading from stdin")
+				log.Print("Reading from stdin")
 				readers = append(readers, io.Reader(os.Stdin))
 			}
 
@@ -227,6 +229,7 @@ into individual files, organized following Operate First standards.`,
 }
 
 func main() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	log.Printf("Halberd build %s", version.BuildRef)
 	cobra.CheckErr(NewCmdRoot().Execute())
 }
