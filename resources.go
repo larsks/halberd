@@ -26,13 +26,12 @@ type (
 		Namespaced bool
 	}
 
-	ResourceList []APIResource
+	APIResourceList []APIResource
 )
 
 var (
 	//go:embed data/resources.yaml
 	apiResourcesData []byte
-	apiResources     []APIResource
 	apiResourcesMap  map[string]APIResource = make(map[string]APIResource)
 )
 
@@ -50,13 +49,13 @@ func getClient() (*discovery.DiscoveryClient, error) {
 	return client, err
 }
 
-func getResources(client *discovery.DiscoveryClient) (ResourceList, error) {
+func getResources(client *discovery.DiscoveryClient) (APIResourceList, error) {
 	resources, err := client.ServerPreferredResources()
 	if err != nil {
 		return nil, err
 	}
 
-	var resourceList ResourceList
+	var resourceList APIResourceList
 
 	for _, rgrp := range resources {
 		parts := strings.Split(rgrp.GroupVersion, "/")
@@ -96,7 +95,7 @@ func getResources(client *discovery.DiscoveryClient) (ResourceList, error) {
 	return resourceList, nil
 }
 
-func writeResources(resourceList ResourceList) error {
+func writeResources(resourceList APIResourceList) error {
 	resourceJson, err := yaml.Marshal(resourceList)
 	if err != nil {
 		return err
@@ -142,29 +141,58 @@ func updateResources() error {
 	return nil
 }
 
-func readApiResources() {
-	if apiResourcesPath != "" {
-		log.Printf("reading api resources from %s", apiResourcesPath)
-		data, err := ioutil.ReadFile(apiResourcesPath)
-		if err != nil {
-			log.Warn().Msgf("unable to open resource cache %s; using embedded data",
-				apiResourcesPath)
-		} else {
-			apiResourcesData = data
-		}
-	} else {
-		log.Printf("reading resources from embedded data")
+func readApiResourcesFromFile(path string) (APIResourceList, error) {
+	var apiResources []APIResource
+
+	log.Info().Msgf("reading api resources from %s", apiResourcesPath)
+
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Warn().Err(err).Msgf("unable to open resource cache %s", path)
+		return nil, err
 	}
+
+	if err := yaml.Unmarshal(data, &apiResources); err != nil {
+		log.Warn().Err(err).Msgf("unable to unmarshal %s", path)
+		return nil, err
+	}
+
+	return apiResources, nil
+}
+
+func readApiResourcesEmbedded() (APIResourceList, error) {
+	var apiResources []APIResource
+
+	log.Info().Msgf("reading embedded api resource data")
 
 	err := yaml.Unmarshal(apiResourcesData, &apiResources)
 	if err != nil {
-		log.Fatal().Msgf("failed to read api resources: %v", err)
+		log.Error().Err(err).Msgf("failed to read embedded api resources")
+		return nil, err
 	}
-	log.Printf("read %d api resources", len(apiResources))
+
+	return apiResources, nil
+}
+
+func readApiResources() error {
+	var apiResources APIResourceList
+
+	if apiResourcesPath != "" {
+		resources, err := readApiResourcesFromFile(apiResourcesPath)
+		if err != nil {
+			resources, err = readApiResourcesEmbedded()
+			if err != nil {
+				return err
+			}
+		}
+		apiResources = resources
+	}
 
 	for _, r := range apiResources {
 		apiResourcesMap[r.Key()] = r
 	}
+
+	return nil
 }
 
 func (r APIResource) Key() string {

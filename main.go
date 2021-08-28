@@ -162,10 +162,13 @@ into individual files, organized following Operate First standards.`,
 					log.Error().Err(err).Msgf("failed to update resource cache")
 				}
 			}
-			readApiResources()
+			if err := readApiResources(); err != nil {
+				return err
+			}
 
 			if len(args) > 0 {
 				for _, path := range args {
+					log.Info().Msgf("reading manifests from %s", path)
 					f, err := os.Open(path)
 					if err != nil {
 						log.Fatal().Err(err)
@@ -175,7 +178,7 @@ into individual files, organized following Operate First standards.`,
 					readers = append(readers, io.Reader(f))
 				}
 			} else {
-				log.Info().Msgf("Reading from stdin")
+				log.Info().Msgf("reading manifests from stdin")
 				readers = append(readers, io.Reader(os.Stdin))
 			}
 
