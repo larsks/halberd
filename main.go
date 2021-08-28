@@ -99,7 +99,7 @@ func Split(reader io.Reader) {
 		}
 
 		path := res.Path()
-		log.Info().Msgf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
+		log.Debug().Msgf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
 		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 			log.Fatal().Msgf("failed to create directory %s: %v", path, err)
 		}
@@ -159,7 +159,7 @@ into individual files, organized following Operate First standards.`,
 				}
 
 				if err != nil {
-					log.Error().Err(err).Msgf("failed to update resource cache")
+					log.Warn().Err(err).Msgf("failed to update resource cache")
 				}
 			}
 			if err := readApiResources(); err != nil {
