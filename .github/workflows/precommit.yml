@@ -1,13 +1,12 @@
 on:
   push:
-    paths:
-      - '**'
-      - '!changelog/config.env'
+    paths-ignore:
+      - 'changelog/config.env'
 
   pull_request:
 
 jobs:
-  run-tests:
+  run-linters:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
