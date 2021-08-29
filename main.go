@@ -75,8 +75,9 @@ func (r Resource) Path() string {
 	)
 }
 
-func Split(reader io.Reader) {
+func Split(reader io.Reader) int {
 	dec := yaml.NewDecoder(reader)
+	count := 0
 
 	for {
 		var node yaml.Node
@@ -113,7 +114,11 @@ func Split(reader io.Reader) {
 		if err != nil {
 			log.Fatal().Msgf("failed to write file: %v", err)
 		}
+
+		count++
 	}
+
+	return count
 }
 
 func setLogLevel() {
@@ -187,9 +192,12 @@ into individual files, organized following Operate First standards.`,
 				return fmt.Errorf("unable to access %s: %w", targetDir, err)
 			}
 
+			total := 0
 			for _, reader := range readers {
-				Split(reader)
+				total += Split(reader)
 			}
+
+			log.Info().Msgf("processed %d resources", total)
 
 			return nil
 		},
