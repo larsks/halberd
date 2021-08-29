@@ -155,7 +155,7 @@ into individual files, organized following Operate First standards.`,
 				err := updateResources()
 
 				if updateResourcesAndExitFlag {
-					return fmt.Errorf("failed to update resource cache: %s", err)
+					return err
 				}
 
 				if err != nil {

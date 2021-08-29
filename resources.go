@@ -115,7 +115,7 @@ func writeResources(resourceList APIResourceList) error {
 		}
 	}
 
-	log.Info().Msgf("writing resources to %s", apiResourcesPath)
+	log.Warn().Msgf("writing resources to %s", apiResourcesPath)
 	if err := ioutil.WriteFile(apiResourcesPath, resourceJson, 0o644); err != nil {
 		return err
 	}
