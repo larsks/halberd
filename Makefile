@@ -3,6 +3,7 @@ EXE=halberd-$(shell go env GOOS)-$(shell go env GOARCH)
 
 GOSRC =  main.go \
 	 resources.go \
+	 kustomization.go \
 	 $(wildcard version/*.go)
 DATA = data/resources.yaml
 

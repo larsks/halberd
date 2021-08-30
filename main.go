@@ -27,6 +27,7 @@ var (
 	kubeconfig                 string
 	targetDir                  string
 	verbosity                  int
+	generateKustomizeFlag      bool
 )
 
 type (
@@ -102,17 +103,26 @@ func Split(reader io.Reader) int {
 		path := res.Path()
 		log.Debug().Msgf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
 		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
-			log.Fatal().Msgf("failed to create directory %s: %v", path, err)
+			log.Fatal().Err(err).Msgf("failed to create directory %s", path)
 		}
 
 		content, err := yaml.Marshal(&node)
 		if err != nil {
-			log.Fatal().Msgf("failed to marshal yaml: %v", err)
+			log.Fatal().Err(err).Msgf("failed to marshal yaml")
 		}
 
 		err = ioutil.WriteFile(path, content, 0644)
 		if err != nil {
-			log.Fatal().Msgf("failed to write file: %v", err)
+			log.Fatal().Err(err).Msgf("failed to write file")
+		}
+
+		if generateKustomizeFlag {
+			k := NewKustomization()
+			k.AddResource(filepath.Base(path))
+			kPath := filepath.Join(filepath.Dir(path), "kustomization.yaml")
+			if err := k.Write(kPath); err != nil {
+				log.Fatal().Err(err).Msgf("failed to write kustomization")
+			}
 		}
 
 		count++
@@ -214,6 +224,7 @@ into individual files, organized following Operate First standards.`,
 	rootCmd.Flags().StringVar(
 		&kubeconfig, "kubeconfig", defaultKubeconfig, "absolute path to the kubeconfig file")
 
+	rootCmd.Flags().BoolVarP(&generateKustomizeFlag, "add-kustomize", "k", false, "Create kustomization.yaml files")
 	rootCmd.Flags().StringVarP(
 		&apiResourcesPath, "api-resources", "r", defaultResources, "api resources information")
 	rootCmd.Flags().StringVarP(
