@@ -4,21 +4,30 @@ on:
       - "changelog/config.env"
 
 jobs:
-  test:
+  run-linters:
+    name: Run linters
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Run linters
-        uses: golangci/golangci-lint-action@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
         with:
-          version: v1.42
+          python-version: '^3.9'
+
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+
+      - name: Run linters
+        run: |
+          pre-commit run --all-files
 
   build:
     name: Build binary
     runs-on: ubuntu-latest
-    needs: test
+    needs: run-linters
 
     strategy:
       matrix:

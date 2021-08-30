@@ -3,9 +3,9 @@ package version
 import "fmt"
 
 var (
-	BuildVersion string = "development"
-	BuildRef     string = ""
-	BuildDate    string = ""
+	BuildVersion = "development"
+	BuildRef     = ""
+	BuildDate    = ""
 )
 
 func ShowVersion() {

@@ -7,12 +7,35 @@ on:
 
 jobs:
   run-linters:
+    name: Run linters
     runs-on: ubuntu-latest
+    env:
+      GOLANGCI_LINT_VERSION: 1.42.0
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Run linters
-        uses: golangci/golangci-lint-action@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
         with:
-          version: v1.42
+          python-version: '^3.9'
+
+      - name: Set up go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16'
+
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+
+      - name: Install golangci-lint
+        run: |
+          mkdir -p ~/.cache/bin
+          curl -sfL -o golangci-lint.tar.gz https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_LINT_VERSION}/golangci-lint-${GOLANGCI_LINT_VERSION}-linux-amd64.tar.gz
+          tar -C ~/.cache/bin -xf golangci-lint.tar.gz --strip-components 1 --wildcards '*/golangci-lint'
+
+      - name: Run linters
+        run: |
+          export PATH=$HOME/.cache/bin:$PATH
+          pre-commit run --all-files

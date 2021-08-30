@@ -71,7 +71,7 @@ type (
 var (
 	//go:embed data/resources.yaml
 	apiResourcesData []byte
-	apiResourcesMap  map[string]ResourceInfo = make(map[string]ResourceInfo)
+	apiResourcesMap  = make(map[string]ResourceInfo)
 )
 
 func (e *ResourceError) Unwrap() error {
@@ -131,9 +131,9 @@ func (r ResourceDefinition) Group() (group string) {
 	parts := strings.Split(r.APIVersion, "/")
 	if len(parts) > 1 {
 		return r.APIVersion
-	} else {
-		return fmt.Sprintf("core/%s", r.APIVersion)
 	}
+
+	return fmt.Sprintf("core/%s", r.APIVersion)
 }
 
 func (r ResourceDefinition) Key() string {
