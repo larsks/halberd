@@ -29,6 +29,7 @@ var (
 	generateKustomizeFlag      bool
 	namespacedOnlyFlag         bool
 	nonNamespacedOnlyFlag      bool
+	versionFlag                bool
 )
 
 func Split(reader io.Reader) int {
@@ -38,10 +39,10 @@ func Split(reader io.Reader) int {
 	for {
 		var node yaml.Node
 		err := dec.Decode(&node)
-		if errors.Is(err, io.EOF) {
-			break
-		}
 		if err != nil {
+			if errors.Is(err, io.EOF) {
+				break
+			}
 			log.Fatal().Msgf("failed to decode yaml: %v", err)
 		}
 
@@ -123,7 +124,11 @@ into individual files, organized following Operate First standards.`,
 			var readers []io.Reader
 
 			setLogLevel()
-			log.Info().Msgf("Halberd build %s", version.BuildRef)
+
+			if versionFlag {
+				version.ShowVersion()
+				return nil
+			}
 
 			if updateResourcesAndExitFlag {
 				updateResourcesFlag = true
@@ -150,7 +155,8 @@ into individual files, organized following Operate First standards.`,
 					log.Info().Msgf("reading manifests from %s", path)
 					f, err := os.Open(path)
 					if err != nil {
-						log.Fatal().Err(err)
+						log.Error().Err(err)
+						return err
 					}
 
 					defer f.Close()
@@ -201,6 +207,7 @@ into individual files, organized following Operate First standards.`,
 		&verbosity, "verbose", "v", "Increase log verbosity")
 	rootCmd.Flags().BoolVarP(&namespacedOnlyFlag, "namespaced", "n", false, "Only emit namespaced resources")
 	rootCmd.Flags().BoolVarP(&nonNamespacedOnlyFlag, "non-namespaced", "N", false, "Only emit non-namespaced resources")
+	rootCmd.Flags().BoolVar(&versionFlag, "version", false, "Display version information")
 
 	return &rootCmd
 }

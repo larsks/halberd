@@ -14,7 +14,6 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"k8s.io/client-go/discovery"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 type (
@@ -149,20 +148,6 @@ func (r *Resource) Path() string {
 		r.Definition.Metadata.Name,
 		strings.ToLower(r.Info.Kind),
 	)
-}
-
-func getClient() (*discovery.DiscoveryClient, error) {
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		return nil, err
-	}
-
-	client, err := discovery.NewDiscoveryClientForConfig(config)
-	if err != nil {
-		return nil, err
-	}
-
-	return client, err
 }
 
 func getResources(client *discovery.DiscoveryClient) (ResourceInfoList, error) {
