@@ -6,7 +6,6 @@ import (
 	"io"
 	"io/ioutil"
 	"path/filepath"
-	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -28,53 +27,9 @@ var (
 	targetDir                  string
 	verbosity                  int
 	generateKustomizeFlag      bool
+	namespacedOnlyFlag         bool
+	nonNamespacedOnlyFlag      bool
 )
-
-type (
-	kvmap map[string]string
-
-	// Metadata represents the metadata section of a Kubernetes resource.
-	Metadata struct {
-		Name        string
-		Annotations kvmap `yaml:",omitempty"`
-		Labels      kvmap `yaml:",omitempty"`
-	}
-
-	// Resource represents the core attributes of a Kubernetes resource. This
-	// struct is embedded in all other Kubernetes resource models.
-	Resource struct {
-		APIVersion string `yaml:"apiVersion"`
-		Kind       string
-		Metadata   Metadata `yaml:",omitempty"`
-	}
-)
-
-func (r Resource) Group() (group string) {
-	parts := strings.Split(r.APIVersion, "/")
-	if len(parts) > 1 {
-		return r.APIVersion
-	} else {
-		return fmt.Sprintf("core/%s", r.APIVersion)
-	}
-}
-
-func (r Resource) Key() string {
-	return fmt.Sprintf("%s/%s", r.Group(), r.Kind)
-}
-
-func (r Resource) Path() string {
-	spec, exists := apiResourcesMap[r.Key()]
-	if !exists {
-		log.Fatal().Msgf("%s: unknown resource", r.Key())
-	}
-	return fmt.Sprintf(
-		"%s/%s/%s/%s.yaml",
-		spec.APIGroup,
-		strings.ToLower(spec.Name),
-		r.Metadata.Name,
-		strings.ToLower(spec.Kind),
-	)
-}
 
 func Split(reader io.Reader) int {
 	dec := yaml.NewDecoder(reader)
@@ -90,18 +45,27 @@ func Split(reader io.Reader) int {
 			log.Fatal().Msgf("failed to decode yaml: %v", err)
 		}
 
-		var res Resource
-		err = node.Decode(&res)
+		res, err := ResourceFromNode(&node)
 		if err != nil {
-			log.Fatal().Msgf("failed to decode resource: %v", err)
+			var e *InvalidResourceError
+			if errors.As(err, &e) {
+				log.Warn().Err(err).Msgf("failed to decode resource")
+				continue
+			} else {
+				log.Fatal().Err(err).Msgf("failed to decode resource")
+			}
 		}
-		if res.APIVersion == "" {
-			log.Warn().Msgf("skipping invalid resource")
+
+		if namespacedOnlyFlag && !res.Info.Namespaced {
+			continue
+		}
+
+		if nonNamespacedOnlyFlag && res.Info.Namespaced {
 			continue
 		}
 
 		path := res.Path()
-		log.Debug().Msgf("putting %s/%s in %s", res.Kind, res.Metadata.Name, path)
+		log.Debug().Msgf("putting %s/%s in %s", res.Definition.Kind, res.Definition.Metadata.Name, path)
 		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 			log.Fatal().Err(err).Msgf("failed to create directory %s", path)
 		}
@@ -235,6 +199,8 @@ into individual files, organized following Operate First standards.`,
 		&updateResourcesAndExitFlag, "update-only", false, "Update resource cache and exit")
 	rootCmd.Flags().CountVarP(
 		&verbosity, "verbose", "v", "Increase log verbosity")
+	rootCmd.Flags().BoolVarP(&namespacedOnlyFlag, "namespaced", "n", false, "Only emit namespaced resources")
+	rootCmd.Flags().BoolVarP(&nonNamespacedOnlyFlag, "non-namespaced", "N", false, "Only emit non-namespaced resources")
 
 	return &rootCmd
 }

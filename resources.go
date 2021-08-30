@@ -27,6 +27,46 @@ type (
 	}
 
 	ResourceInfoList []ResourceInfo
+
+	Resource struct {
+		Info       ResourceInfo
+		Definition ResourceDefinition
+	}
+
+	kvmap map[string]string
+
+	// Metadata represents the metadata section of a Kubernetes resource.
+	Metadata struct {
+		Name        string
+		Annotations kvmap `yaml:",omitempty"`
+		Labels      kvmap `yaml:",omitempty"`
+	}
+
+	// Resource represents the core attributes of a Kubernetes resource. This
+	// struct is embedded in all other Kubernetes resource models.
+	ResourceDefinition struct {
+		APIVersion string `yaml:"apiVersion"`
+		Kind       string
+		Metadata   Metadata `yaml:",omitempty"`
+	}
+
+	ResourceError struct {
+		Err      error
+		Node     *yaml.Node
+		Resource Resource
+	}
+
+	ResourceDecodingFailedError struct {
+		ResourceError
+	}
+
+	InvalidResourceError struct {
+		ResourceError
+	}
+
+	ResourceNotFoundError struct {
+		ResourceError
+	}
 )
 
 var (
@@ -34,6 +74,82 @@ var (
 	apiResourcesData []byte
 	apiResourcesMap  map[string]ResourceInfo = make(map[string]ResourceInfo)
 )
+
+func (e *ResourceError) Unwrap() error {
+	return e.Err
+}
+
+func (e *ResourceDecodingFailedError) Error() string {
+	return fmt.Sprintf("resource decoding failed: %v", e.Err)
+}
+
+func (e *InvalidResourceError) Error() string {
+	return "invalid resource"
+}
+
+func (e *ResourceNotFoundError) Error() string {
+	return fmt.Sprintf("resource not found: %s/%s",
+		e.Resource.Definition.APIVersion, e.Resource.Definition.Kind)
+}
+
+func ResourceFromNode(node *yaml.Node) (*Resource, error) {
+	var res Resource
+
+	err := node.Decode(&res.Definition)
+	if err != nil {
+		return nil, &ResourceDecodingFailedError{
+			ResourceError{
+				Err:  err,
+				Node: node,
+			},
+		}
+	}
+	if res.Definition.APIVersion == "" {
+		return nil, &InvalidResourceError{
+			ResourceError{
+				Err:  err,
+				Node: node,
+			},
+		}
+	}
+
+	info, exists := apiResourcesMap[res.Definition.Key()]
+	if !exists {
+		return nil, &ResourceNotFoundError{
+			ResourceError{
+				Err:      err,
+				Node:     node,
+				Resource: res,
+			},
+		}
+	}
+	res.Info = info
+
+	return &res, nil
+}
+
+func (r ResourceDefinition) Group() (group string) {
+	parts := strings.Split(r.APIVersion, "/")
+	if len(parts) > 1 {
+		return r.APIVersion
+	} else {
+		return fmt.Sprintf("core/%s", r.APIVersion)
+	}
+}
+
+func (r ResourceDefinition) Key() string {
+	return fmt.Sprintf("%s/%s", r.Group(), r.Kind)
+}
+
+func (r *Resource) Path() string {
+	return fmt.Sprintf(
+		"%s/%s/%s/%s.yaml",
+		r.Info.APIGroup,
+		strings.ToLower(r.Info.Name),
+		r.Definition.Metadata.Name,
+		strings.ToLower(r.Info.Kind),
+	)
+}
 
 func getClient() (*discovery.DiscoveryClient, error) {
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
