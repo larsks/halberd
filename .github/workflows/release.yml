@@ -11,18 +11,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '^3.9'
-
-      - name: Install pre-commit
-        run: |
-          pip install pre-commit
-
       - name: Run linters
-        run: |
-          pre-commit run --all-files
+        uses: larsks/cached-go-precommit@v1
 
   build:
     name: Build binary
