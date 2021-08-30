@@ -18,7 +18,7 @@ import (
 )
 
 type (
-	APIResource struct {
+	ResourceInfo struct {
 		APIGroup   string `yaml:"apiGroup"`
 		APIVersion string `yaml:"apiVersion"`
 		Kind       string
@@ -26,13 +26,13 @@ type (
 		Namespaced bool
 	}
 
-	APIResourceList []APIResource
+	ResourceInfoList []ResourceInfo
 )
 
 var (
 	//go:embed data/resources.yaml
 	apiResourcesData []byte
-	apiResourcesMap  map[string]APIResource = make(map[string]APIResource)
+	apiResourcesMap  map[string]ResourceInfo = make(map[string]ResourceInfo)
 )
 
 func getClient() (*discovery.DiscoveryClient, error) {
@@ -49,13 +49,13 @@ func getClient() (*discovery.DiscoveryClient, error) {
 	return client, err
 }
 
-func getResources(client *discovery.DiscoveryClient) (APIResourceList, error) {
+func getResources(client *discovery.DiscoveryClient) (ResourceInfoList, error) {
 	resources, err := client.ServerPreferredResources()
 	if err != nil {
 		return nil, err
 	}
 
-	var resourceList APIResourceList
+	var resourceList ResourceInfoList
 
 	for _, rgrp := range resources {
 		parts := strings.Split(rgrp.GroupVersion, "/")
@@ -80,7 +80,7 @@ func getResources(client *discovery.DiscoveryClient) (APIResourceList, error) {
 				rsc.Version = apiversion
 			}
 
-			entry := APIResource{
+			entry := ResourceInfo{
 				APIGroup:   rsc.Group,
 				APIVersion: rsc.Version,
 				Kind:       rsc.Kind,
@@ -95,7 +95,7 @@ func getResources(client *discovery.DiscoveryClient) (APIResourceList, error) {
 	return resourceList, nil
 }
 
-func writeResources(resourceList APIResourceList) error {
+func writeResources(resourceList ResourceInfoList) error {
 	resourceJson, err := yaml.Marshal(resourceList)
 	if err != nil {
 		return err
@@ -141,8 +141,8 @@ func updateResources() error {
 	return nil
 }
 
-func readApiResourcesFromFile(path string) (APIResourceList, error) {
-	var apiResources []APIResource
+func readApiResourcesFromFile(path string) (ResourceInfoList, error) {
+	var apiResources []ResourceInfo
 
 	log.Info().Msgf("reading api resources from %s", apiResourcesPath)
 
@@ -160,8 +160,8 @@ func readApiResourcesFromFile(path string) (APIResourceList, error) {
 	return apiResources, nil
 }
 
-func readApiResourcesEmbedded() (APIResourceList, error) {
-	var apiResources []APIResource
+func readApiResourcesEmbedded() (ResourceInfoList, error) {
+	var apiResources []ResourceInfo
 
 	log.Info().Msgf("reading embedded api resource data")
 
@@ -175,7 +175,7 @@ func readApiResourcesEmbedded() (APIResourceList, error) {
 }
 
 func readApiResources() error {
-	var apiResources APIResourceList
+	var apiResources ResourceInfoList
 
 	if apiResourcesPath != "" {
 		resources, err := readApiResourcesFromFile(apiResourcesPath)
@@ -195,6 +195,6 @@ func readApiResources() error {
 	return nil
 }
 
-func (r APIResource) Key() string {
+func (r ResourceInfo) Key() string {
 	return fmt.Sprintf("%s/%s/%s", r.APIGroup, r.APIVersion, r.Kind)
 }
