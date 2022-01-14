@@ -25,16 +25,28 @@ Flags:
 
 ## Examples
 
+Make sure the resource cache is up-to-date:
+
+```
+halberd --update-only
+```
+
 To organize a collection of manifests on stdin:
 
 ```
-something-that-emits-manifests | halberd
+something-that-emits-manifests | halberd -v
 ```
 
 To organize a collection of manifests in multiple files:
 
 ```
-halberd file1.yaml file2.yaml
+halberd -v file1.yaml file2.yaml
+```
+
+The same thing, but only emit cluster-scoped resources:
+
+```
+halberd -v -N file1.yaml file2.yaml
 ```
 
 ## Resource cache
