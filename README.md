@@ -5,7 +5,21 @@ into individual files, organized following Operate First standards.
 
 ## Synopsis
 
+<!--[[[cog
+import subprocess
+
+print('```')
+subprocess.run(['make'])
+res = subprocess.run(['./build/halberd-linux-amd64', '--help'], stdout=subprocess.PIPE)
+print(res.stdout.decode())
+print('```')
+]]]-->
 ```
+A tool for breaking Helms
+
+Halberd splits a YAML document containing multiple Kubernetes resources
+into individual files, organized following Operate First standards.
+
 Usage:
   halberd [flags]
 
@@ -21,7 +35,9 @@ Flags:
       --update-only            Update resource cache and exit
   -v, --verbose count          Increase log verbosity
       --version                Display version information
+
 ```
+<!--[[[end]]]-->
 
 ## Examples
 
