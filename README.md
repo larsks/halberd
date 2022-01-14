@@ -1,5 +1,29 @@
 # Halberd: A tool for splitting Helms
 
+Halberd splits a YAML document containing multiple Kubernetes resources
+into individual files, organized following Operate First standards.
+
+## Synopsis
+
+```
+Usage:
+  halberd [flags]
+
+Flags:
+  -k, --add-kustomize          Create kustomization.yaml files
+  -r, --api-resources string   api resources information (default "/home/lars/.config/halberd/resources.yaml")
+  -d, --directory string       target directory (default ".")
+  -h, --help                   help for halberd
+      --kubeconfig string      absolute path to the kubeconfig file (default "/home/lars/.kube/config")
+  -n, --namespaced             Only emit namespaced resources
+  -N, --non-namespaced         Only emit non-namespaced resources
+      --update                 Update resource cache
+      --update-only            Update resource cache and exit
+  -v, --verbose count          Increase log verbosity
+      --version                Display version information
+```
+
+## Examples
 
 To organize a collection of manifests on stdin:
 
