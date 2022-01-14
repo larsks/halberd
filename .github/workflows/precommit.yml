@@ -1,7 +1,7 @@
 on:
   push:
     paths-ignore:
-      - 'changelog/config.env'
+      - 'changelog/**'
 
   pull_request:
 
