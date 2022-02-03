@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/rs/zerolog"
@@ -27,10 +28,18 @@ var (
 	targetDir                  string
 	verbosity                  int
 	generateKustomizeFlag      bool
+	gitAddFlag                 bool
 	namespacedOnlyFlag         bool
 	nonNamespacedOnlyFlag      bool
 	versionFlag                bool
 )
+
+func GitAddFile(path string) error {
+	log.Debug().Str("path", path).Msgf("adding file to git repository")
+	cmd := exec.Command("git", "add", path)
+	err := cmd.Run()
+	return err
+}
 
 func Split(reader io.Reader) int {
 	dec := yaml.NewDecoder(reader)
@@ -81,12 +90,24 @@ func Split(reader io.Reader) int {
 			log.Fatal().Err(err).Msgf("failed to write file")
 		}
 
+		if gitAddFlag {
+			if err = GitAddFile(path); err != nil {
+				log.Fatal().Err(err).Msgf("failed to add file to git repository")
+			}
+		}
+
 		if generateKustomizeFlag {
 			k := NewKustomization()
 			k.AddResource(filepath.Base(path))
 			kPath := filepath.Join(filepath.Dir(path), "kustomization.yaml")
 			if err := k.Write(kPath); err != nil {
 				log.Fatal().Err(err).Msgf("failed to write kustomization")
+			}
+
+			if gitAddFlag {
+				if err = GitAddFile(kPath); err != nil {
+					log.Fatal().Err(err).Msgf("failed to add kustomization to git repository")
+				}
 			}
 		}
 
@@ -195,6 +216,7 @@ into individual files, organized following Operate First standards.`,
 		&kubeconfig, "kubeconfig", defaultKubeconfig, "absolute path to the kubeconfig file")
 
 	rootCmd.Flags().BoolVarP(&generateKustomizeFlag, "add-kustomize", "k", false, "Create kustomization.yaml files")
+	rootCmd.Flags().BoolVarP(&gitAddFlag, "git-add", "g", false, "Add generated files to git repository")
 	rootCmd.Flags().StringVarP(
 		&apiResourcesPath, "api-resources", "r", defaultResources, "api resources information")
 	rootCmd.Flags().StringVarP(
