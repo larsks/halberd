@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -80,12 +81,14 @@ func Split(reader io.Reader) int {
 			log.Fatal().Err(err).Msgf("failed to create directory %s", path)
 		}
 
-		content, err := yaml.Marshal(&node)
-		if err != nil {
+		var content bytes.Buffer
+		yamlEncoder := yaml.NewEncoder(&content)
+		yamlEncoder.SetIndent(2)
+		if err := yamlEncoder.Encode(&node); err != nil {
 			log.Fatal().Err(err).Msgf("failed to marshal yaml")
 		}
 
-		err = ioutil.WriteFile(path, content, 0644)
+		err = ioutil.WriteFile(path, content.Bytes(), 0644)
 		if err != nil {
 			log.Fatal().Err(err).Msgf("failed to write file")
 		}
