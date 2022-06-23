@@ -16,7 +16,7 @@ import (
 
 	"github.com/larsks/halberd/version"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
+	yaml "gopkg.in/yaml.v3"
 
 	"k8s.io/client-go/util/homedir"
 )
