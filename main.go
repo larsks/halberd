@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os/exec"
 	"path/filepath"
 
@@ -88,7 +87,7 @@ func Split(reader io.Reader) int {
 			log.Fatal().Err(err).Msgf("failed to marshal yaml")
 		}
 
-		err = ioutil.WriteFile(path, content.Bytes(), 0644)
+		err = os.WriteFile(path, content.Bytes(), 0644)
 		if err != nil {
 			log.Fatal().Err(err).Msgf("failed to write file")
 		}
