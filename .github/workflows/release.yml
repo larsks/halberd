@@ -21,7 +21,7 @@ jobs:
           python-version: '^3.9'
 
       - name: Set up go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: '^1.16'
 
@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v5
         with:
           go-version: '^1.16'
       - name: Build binaries
