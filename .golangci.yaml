@@ -1,16 +1,16 @@
 linters:
   enable:
-    - deadcode
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - structcheck
-    - typecheck
-    - unused
-    - varcheck
-    - revive
+  - errcheck
+  - gosimple
+  - govet
+  - ineffassign
+  - revive
+  - staticcheck
+  - unused
+  - gocritic
+  - importas
+  - misspell
+  - revive
 
 linters-settings:
   revive:
