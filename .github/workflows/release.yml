@@ -102,7 +102,7 @@ jobs:
           echo "::set-output name=release_description::$RELEASE_DESCRIPTION"
 
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: artifacts
 
